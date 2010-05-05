@@ -1,0 +1,16 @@
+1. Add some username detection ($_SERVER['PHP_AUTH_USER']?) in which maps someone onto a particular customer
+ e.g. crownford / floorplanz / admins
+
+
+2. Add company field to users table - which is an arbitrary string.
+
+3. Update UI to filter by appropriate company
+
+4. Admins should be able to see all users
+
+5. Non-Admins can only see users belonging to their company
+
+6. Should we add something to $config to anchor a customer within a particular area e.g. 'floorplanz' => '/srv/floorplanz' etc.
+
+7. Setup SSL certificate (free one, or snakeoil one? (rapidssl or whoever?))
+
