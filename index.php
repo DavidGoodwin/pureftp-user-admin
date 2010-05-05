@@ -4,15 +4,28 @@ ini_set('magic_quotes_gpc', 1);
 if(!get_magic_quotes_gpc()) {
 	die("Insecure - magic quotes not enabled");
 }
+
 require("pureuserclass.php");
 $a = new pureuseradmin();
 
 switch ($_POST["action"]) {
-	case "edit_user"   : edit_user($_POST["username"]);                                      break;
-	case "save_user"   : $a->save_user($_POST["userinfo"]); gen_list();                      break;
-	case "delete_user" : $a->delete_user($_POST["userinfo"]); gen_list();                    break;
-	case "search"      : gen_list($_REQUEST["searchstring"],$_REQUEST["start"]);             break;
-	default            : welcome();                                                          break;
+	case "edit_user" : 
+        edit_user($_POST["username"]); 
+        break;
+	case "save_user" : 
+        $a->save_user($_POST["userinfo"]); 
+        gen_list(); 
+        break;
+	case "delete_user" : 
+        $a->delete_user($_POST["userinfo"]); 
+        gen_list();
+        break;
+	case "search" : 
+        gen_list($_REQUEST["searchstring"],$_REQUEST["start"]);             
+        break;
+	default : 
+        welcome(); 
+        break;
 }
 
 function html_header ($title) {
@@ -234,7 +247,8 @@ function edit_user ($username = "") {
 	</tr><tr>
 		<td class="listtdleft" align="right">email: </td>
 		<td class="listtd"><input type="text" name="userinfo[email]" value="<?=$userinfo['email']?>"/></td>
-	</tr><tr>
+	</tr>
+    <tr>
 		<td class="listtdleft" align="right">uid: </td>
 		<?php if(empty($userinfo['uid'])) { $userinfo['uid'] = '65534'; } ?>
 		<td class="listtd">
@@ -299,7 +313,7 @@ function gen_list ($search = "", $start = 0) {
 		<td class="headertdright">&nbsp;</td>
 	</tr><tr>
 		<td class="listtdleft">searchstring</td>
-		<td class="listtd"><input type="text" name="searchstring" value="<?=$search?>"></td>
+		<td class="listtd"><input type="text" name="searchstring" value="<?= escape_html($search) ?>"></td>
 		<td class="listtd"><a href="javascript:set('action','search');verzend();">go</a></td>
 	</tr></table>
 	<br />
@@ -331,7 +345,7 @@ function gen_list ($search = "", $start = 0) {
 		}
 		?>
 		<tr>
-			<td class="listtdleft"><a href="javascript:set('action','edit_user');set('username','<?=$user["username"]?>');verzend();"><?=$user["username"]?></a></td>
+			<td class="listtdleft"><a href="javascript:set('action','edit_user');set('username','<?= escape_html($user["username"]) ?>');verzend();"><?= escape_html($user["username"]) ?></a></td>
 			<td class="listtd"><? echo $a->uids[$user["uid"]] ? $a->uids[$user["uid"]] : $user["uid"]; ?></td>
 			<td class="listtd"><? echo $a->gids[$user["gid"]] ? $a->gids[$user["gid"]] : $user["gid"]; ?></td>
 			<td class="listtd"><?=$user["dir"]?> <? if ($a->settings["check_access"]) { ?>(<?=$right?>)<? } ?></td>
@@ -357,5 +371,3 @@ function gen_list ($search = "", $start = 0) {
 
 	html_footer();
 }
-
-?>
