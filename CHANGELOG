@@ -1,0 +1,25 @@
+PureUserAdmin: ChangeLog
+
+[0.2.1] <mvanbaak (AT) users (DOT) sourceforge (DOT) net>
+* added search and paging in userlist again
+
+[0.2.0] <mvanbaak (at) users (dot) sourceforge (dot) net>
+* php5 support
+* dropped php4 support
+* all is in a class now
+* phpdoc comments
+* made the database fields part of the settings array
+
+[0.1.0] <mvanbaak (at) users (dot) sourceforge (dot) net>
+* added welcome screen
+* added email notification
+
+[0.0.3] <mvanbaak (at) users (dot) sourceforge (dot) net>
+* changed vars to match my release system
+
+[0.0.2] <mvanbaak (at) users (dot) sourceforge (dot) net>
+* added check for homedir rights
+* changed look
+
+[0.0.1] <mvanbaak (at) users (dot) sourceforge (dot) net>
+* Initial Release

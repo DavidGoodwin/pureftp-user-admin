@@ -1,0 +1,27 @@
+1. Requirements.
+-------------------------------------------------------------------------------
+
+PureUserAdmin requires :
+  
+    * A http server
+    * PHP5, with mysql.so/psql.so module (or build in support).
+    * MySQL/PostgreSQL daemon.
+		* PureFTPd with mysql/postgresql auth config
+		* A webbrowser
+  
+Supported browsers are:
+  
+    * Mozilla 
+    * Netscape 6.x+
+    * IE 5.x (and higher)
+    * Opera 6.0+
+    * Lynx
+  
+2. Installation.
+-------------------------------------------------------------------------------
+
+Just unpack it somewhere in your www root.
+Edit index.php to reflect your system.
+
+
+Sat Oct 16 12:32:25 CEST 2004
