@@ -167,6 +167,20 @@ class pureuseradmin {
     public function changeSetting ($setting, $value) {
         $this->settings[$setting] = $value;
     }
+    
+    /**
+     * Retrieves a setting's value. From the config file.
+     * <code> $instance->getSetting("version"); </code>
+     * @param string $setting Name of the setting to return.
+     * @return mixed Value found, or null if no such setting.
+     * @access public
+     */
+    public function getSetting ($setting) {
+        if(isset($this->settings[$setting])) {
+            return $this->settings[$setting];
+        }
+        return null;
+    }
 
     /**
      * Save a user in the database.
@@ -187,6 +201,7 @@ class pureuseradmin {
             $sql .= ", ".$this->settings["field_gid"]."=". (int) $userinfo["gid"];
             $sql .= ", ".$this->settings["field_dir"]."='".$userinfo["dir"]."'";
             $sql .= ", ".$this->settings["field_email"]."='".$userinfo["email"]."'";
+            $sql .= ", ".$this->settings["field_company"]."='".$userinfo["company"]."'";
             // are we going to reset the password ?
             if ($userinfo["password"]) {
                 if ($userinfo["password"] == $userinfo["password1"]) {
@@ -203,11 +218,11 @@ class pureuseradmin {
                 return false;
                 //error
             } else {
-                $sql = "INSERT INTO ".$this->settings["sql_table"]." (".$this->settings["field_user"].",".$this->settings["field_pass"].",".$this->settings["field_uid"].",".$this->settings["field_gid"].",".$this->settings["field_dir"]."," . $this->settings['field_email'] . ") VALUES (";
+                $sql = "INSERT INTO ".$this->settings["sql_table"]." (".$this->settings["field_user"].",".$this->settings["field_pass"].",".$this->settings["field_uid"].",".$this->settings["field_gid"].",".$this->settings["field_dir"]."," . $this->settings['field_email'] . "," . $this->settings['field_company'] . ") VALUES (";
                 $sql .= "'".$userinfo["username"]."', ";
                 $sql .= self::mkpass($userinfo["password"]).", ";
                 $sql .= $userinfo["uid"].", ".$userinfo["gid"].", '".$userinfo["dir"]."', '";
-                $sql .= $userinfo['email'] . "'";
+                $sql .= $userinfo['email'] . "', '" . $userinfo['company'] . "'";
                 $sql .= ")";
             }
         }
@@ -267,15 +282,25 @@ class pureuseradmin {
      * @param string $search Searchstring to limit results.
      * @param integer $start Record in database to start output.
      * @param integer $pagesize Number of users to show on a page.
+     * @param string $company Name of the company to which users must belong.
      * @return array All users with all info that is in the database.
      * @access public
      */
-    public function get_all_users($search = "", $start = 0, $pagesize = 0) {
+    public function get_all_users($search = "", $start = 0, $pagesize = 0, $company = "") {
         if (!$pagesize) { $pagesize = $this->settings["page_size"]; }
         if ($search) {
-            $q = " WHERE ".$this->settings["field_user"]." LIKE '%$search%' OR ".$this->settings["field_dir"]." LIKE '%$search%'";
+            $q = " WHERE (".$this->settings["field_user"]." LIKE '%$search%' OR ".$this->settings["field_dir"]." LIKE '%$search%')";
         } else {
             $q = "";
+        }
+        if (!empty($company)) {
+            if (empty($q)) {
+                $q .= " WHERE";
+            }
+            else {
+                $q .= " AND";
+            }
+            $q .= " ".$this->settings["field_company"]." = '$company'";
         }
         $sql = "SELECT * FROM ".$this->settings["sql_table"]."$q ORDER BY ".$this->settings["field_user"]." LIMIT $start, $pagesize";
         $res = sql_query($sql);
@@ -291,14 +316,24 @@ class pureuseradmin {
      * Get number of users in the database.
      * <code> $nr_users = $instance->get_nr_users(); </code>
      * @param string $search Searchstring to limit results.
+     * @param string $company Name of the company to which users must belong.
      * @return integer Number of users in the database.
      * @access public
      */
-    public function get_nr_users($search = "") {
+    public function get_nr_users($search = "", $company = "") {
         if ($search) {
-            $q = " WHERE ".$this->settings["field_user"]." LIKE '%$search%' OR ".$this->settings["field_dir"]." LIKE '%$search%'";
+            $q = " WHERE (".$this->settings["field_user"]." LIKE '%$search%' OR ".$this->settings["field_dir"]." LIKE '%$search%')";
         } else {
             $q = "";
+        }
+        if (!empty($company)) {
+            if (empty($q)) {
+                $q .= " WHERE";
+            }
+            else {
+                $q .= " AND";
+            }
+            $q .= " ".$this->settings["field_company"]." = '$company'";
         }
         $sql = "SELECT COUNT(*) FROM ".$this->settings["sql_table"]."$q";
         $res = sql_query($sql);

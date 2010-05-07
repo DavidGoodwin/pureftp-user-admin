@@ -1,5 +1,6 @@
 CREATE TABLE  `pureftp`.`logins` (
 	`id` INT NOT NULL AUTO_INCREMENT ,
+    `company` VARCHAR( 255 ) NULL ,
 	`uid` INT NOT NULL ,
 	`gid` INT NOT NULL ,
 	`email` VARCHAR( 255 ) NULL ,

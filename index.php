@@ -8,6 +8,20 @@ if(!get_magic_quotes_gpc()) {
 require("pureuserclass.php");
 $a = new pureuseradmin();
 
+// Only show them users belonging to the company under which they logged in.
+// TODO: Should probably make $company a property of the pureuseradmin instance, so
+// we don't need two global variables.
+$company = "_unknown_company_";
+if (!empty($_SERVER["PHP_AUTH_USER"])) {
+    $company = $_SERVER["PHP_AUTH_USER"];
+    
+    // Unless they're an admin. In which case, they see all.
+    $admins = $a->getSetting("super_admins");
+    if (is_array($admins) && in_array($_SERVER["PHP_AUTH_USER"], $admins)) {
+        $company = "";
+    }
+}
+
 switch ($_POST["action"]) {
 	case "edit_user" : 
         edit_user($_POST["username"]); 
@@ -21,7 +35,7 @@ switch ($_POST["action"]) {
         gen_list();
         break;
 	case "search" : 
-        gen_list($_REQUEST["searchstring"],$_REQUEST["start"]);             
+        gen_list($_REQUEST["searchstring"],$_REQUEST["start"],$company);
         break;
 	default : 
         welcome(); 
@@ -216,7 +230,7 @@ function welcome () {
 }
 
 function edit_user ($username = "") {
-	global $a;
+	global $a, $company;
 	if (strlen($username)) {
 		$userget["username"] = $username;
 		$userinfo = $a->get_user($userget);
@@ -247,6 +261,30 @@ function edit_user ($username = "") {
 	</tr><tr>
 		<td class="listtdleft" align="right">email: </td>
 		<td class="listtd"><input type="text" name="userinfo[email]" value="<?=$userinfo['email']?>"/></td>
+	</tr><tr>
+		<td class="listtdleft" align="right">company: </td>
+		<td class="listtd">
+            <select name="userinfo[company]">
+<?php
+if (empty($company)) {
+    echo "<option value=\"\"></option>";
+    $companies = $a->getSetting("companies");
+    if (is_array($companies)) {
+        foreach ($companies as $company) {
+            $selected = '';
+            if(!empty($userinfo['company']) && $userinfo['company'] == $company) {
+                $selected = ' selected="selected"';
+            }
+            echo "<option value=\"$company\"$selected>$company</option>";
+        }
+    }
+}
+else {
+    echo "<option value=\"$company\">$company</option>";
+}
+?>
+            </select>
+        </td>
 	</tr>
     <tr>
 		<td class="listtdleft" align="right">uid: </td>
@@ -298,7 +336,7 @@ function edit_user ($username = "") {
 	html_footer();
 }
 
-function gen_list ($search = "", $start = 0) {
+function gen_list ($search = "", $start = 0, $company) {
 	global $a;
 	if (!$start) {
 		$start = 0;
@@ -326,8 +364,8 @@ function gen_list ($search = "", $start = 0) {
 	}
 	//how many users do we have
 	
-	$all_users = $a->get_all_users($search, $start);
-	$usernr = $a->get_nr_users($search);
+	$all_users = $a->get_all_users($search, $start, 0, $company);
+	$usernr = $a->get_nr_users($search, $company);
 	foreach ($all_users as $user) {
 		if ($a->settings["check_access"]) {
 			$user_rights = $a->check_access($user["dir"],$user["uid"],$user["gid"]);
