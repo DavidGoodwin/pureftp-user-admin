@@ -427,7 +427,7 @@ function gen_list ($search = "", $start = 0) {
 				<a href="javascript:set('start','<?=($start-$a->settings["page_size"])?>');verzend();">back <?=$a->settings["page_size"]?> records</a>
 			<? } ?>
 		</td>
-		<td class="listtd"><div align="right">
+		<td class="listtd" colspan="2"><div align="right">
 			<? if ($start+$a->settings["page_size"]<$usernr) { ?>
 				<a href="javascript:set('start','<?=($start+$a->settings["page_size"])?>');verzend();">forward <?=$a->settings["page_size"]?> records</a>
 			<? } ?>
