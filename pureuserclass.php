@@ -236,11 +236,6 @@ class pureuseradmin {
         } else {
             // check if name is already in DB.
             $sql  = "SELECT COUNT(*) FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
-            $company = $this->adminCompany;
-            if (empty($company)) {
-                $company = $userinfo["company"];
-            }
-            $sql .= " AND ".$this->settings["field_company"]."='".$company."'";
             $res = sql_query($sql);
             $aantal = sql_result($res,0);
             if ($aantal) {
