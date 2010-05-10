@@ -9,8 +9,6 @@ require("pureuserclass.php");
 $a = new pureuseradmin();
 
 // Only show them users belonging to the company under which they logged in.
-// TODO: Should probably make $company a property of the pureuseradmin instance, so
-// we don't need two global variables.
 $company = "_unknown_company_";
 if (!empty($_SERVER["PHP_AUTH_USER"])) {
     $company = $_SERVER["PHP_AUTH_USER"];
@@ -21,10 +19,11 @@ if (!empty($_SERVER["PHP_AUTH_USER"])) {
         $company = "";
     }
 }
+$a->adminCompany = $company;
 
 switch ($_POST["action"]) {
 	case "edit_user" : 
-        edit_user($_POST["username"]); 
+        edit_user($_POST["id"]); 
         break;
 	case "save_user" : 
         $a->save_user($_POST["userinfo"]); 
@@ -35,7 +34,7 @@ switch ($_POST["action"]) {
         gen_list();
         break;
 	case "search" : 
-        gen_list($_REQUEST["searchstring"],$_REQUEST["start"],$company);
+        gen_list($_REQUEST["searchstring"],$_REQUEST["start"]);
         break;
 	default : 
         welcome(); 
@@ -123,6 +122,11 @@ function html_header ($title) {
 			color: #E4E9EB;
 			font-weight: bold;
 		}
+        div.error {
+            border: 2px solid #ff0000;
+            background-color: #ff7373;
+            width: 600px;
+        }
 		</style>
 		<script language="Javascript1.2" type="text/javascript">
 			// function to alter form field values
@@ -147,16 +151,29 @@ function html_header ($title) {
 	</tr><tr>
 		<td class="links" align="center" valign="middle">
 			<a class="toplinks" href="<?=$_SERVER["PHP_SELF"]?>">[ Home ]</a>
-			<a class="toplinks" href="Javascript:set('username','');set('action', 'edit_user');verzend();">[ New User ]</a>
+			<a class="toplinks" href="Javascript:set('id','');set('action', 'edit_user');verzend();">[ New User ]</a>
 			<a class="toplinks" href="Javascript:set('action', 'search');verzend();">[ Userlist ]</a>
 			<a class="toplinks" href="http://pureuseradmin.sourceforge.net">[ Project Page ]</a>
 		</td>
-	</tr><tr>
+	</tr>
+<?php
+if (!empty($a->errors)) {
+    echo '<tr><td class="maintd" align="center"><div class="error">';
+    foreach ($a->errors as $type => $errors) {
+        echo "<h1>".escape_html($type)."</h1><ul>";
+        foreach ($errors as $error) {
+            echo "<li>".escape_html($error)."</li>";
+        }
+    }
+    echo '</ul></div></td></tr>';
+}
+?>
+    <tr>
 		<td class="maintd" align="center">
 		<div style="vertical-align: middle">
 			<form name="pageform" id="pageform" method="post" action="index.php">
 			<input type="hidden" name="action" value="<?=$_POST["action"]?>" />
-			<input type="hidden" name="username" value="<?=$_POST["username"]?>" />
+			<input type="hidden" name="id" value="<?=$_POST["id"]?>" />
 	<?
 }
 
@@ -229,13 +246,15 @@ function welcome () {
 	html_footer();
 }
 
-function edit_user ($username = "") {
-	global $a, $company;
-	if (strlen($username)) {
-		$userget["username"] = $username;
-		$userinfo = $a->get_user($userget);
+function edit_user ($id = 0) {
+	global $a;
+	if (!empty($id)) {
+		$userinfo = $a->get_user($id);
 		html_header("edit user");
-		?><input type="hidden" name="userinfo[update]" value="1" /><?
+		?>
+        <input type="hidden" name="userinfo[update]" value="1" />
+        <input type="hidden" name="userinfo[id]" value="<?= intval($id) ?>" />
+        <?
 	} else {
 		// new user
 		html_header("new user");
@@ -266,7 +285,7 @@ function edit_user ($username = "") {
 		<td class="listtd">
             <select name="userinfo[company]">
 <?php
-if (empty($company)) {
+if (empty($a->adminCompany)) {
     echo "<option value=\"\"></option>";
     $companies = $a->getSetting("companies");
     if (is_array($companies)) {
@@ -280,6 +299,7 @@ if (empty($company)) {
     }
 }
 else {
+    $company = escape_html($a->adminCompany);
     echo "<option value=\"$company\">$company</option>";
 }
 ?>
@@ -320,7 +340,15 @@ else {
 		</td>
 	</tr><tr>
 		<td class="listtdleft" align="right">homedir: </td>
-		<?php if(empty($userinfo['dir'])) { $userinfo['dir'] = '/srv/floorplanz/'; } ?>
+<?php
+if(empty($userinfo['dir'])) {
+    $company_dir = '';
+    if(!empty($a->adminCompany)) {
+        $company_dir = '/' . strtolower($a->adminCompany);
+    }
+    $userinfo['dir'] = '/srv' . $company_dir;
+}
+?>
 		<td class="listtd"><input type="text" name="userinfo[dir]" value="<?=$userinfo["dir"]?>" /></td>
 	</tr><tr>
 		<td colspan="2" class="listtdleft">
@@ -336,7 +364,7 @@ else {
 	html_footer();
 }
 
-function gen_list ($search = "", $start = 0, $company) {
+function gen_list ($search = "", $start = 0) {
 	global $a;
 	if (!$start) {
 		$start = 0;
@@ -355,7 +383,7 @@ function gen_list ($search = "", $start = 0, $company) {
 		<td class="listtd"><a href="javascript:set('action','search');verzend();">go</a></td>
 	</tr></table>
 	<br />
-	<table border="0" cellspacing="0" cellpadding="2"><tr><td class="headertdleft">username</td><td class="headertd">uid</td><td class="headertd">gid</td><td class="headertdright">homedir</td></tr>
+	<table border="0" cellspacing="0" cellpadding="2"><tr><td class="headertdleft">username</td><td class="headertd">company</td><td class="headertd">uid</td><td class="headertd">gid</td><td class="headertdright">homedir</td></tr>
 	<?
 	if ($search) {
 		$sql_s = " WHERE username LIKE '%$search%' ";
@@ -364,8 +392,8 @@ function gen_list ($search = "", $start = 0, $company) {
 	}
 	//how many users do we have
 	
-	$all_users = $a->get_all_users($search, $start, 0, $company);
-	$usernr = $a->get_nr_users($search, $company);
+	$all_users = $a->get_all_users($search, $start, 0);
+	$usernr = $a->get_nr_users($search);
 	foreach ($all_users as $user) {
 		if ($a->settings["check_access"]) {
 			$user_rights = $a->check_access($user["dir"],$user["uid"],$user["gid"]);
@@ -383,7 +411,8 @@ function gen_list ($search = "", $start = 0, $company) {
 		}
 		?>
 		<tr>
-			<td class="listtdleft"><a href="javascript:set('action','edit_user');set('username','<?= escape_html($user["username"]) ?>');verzend();"><?= escape_html($user["username"]) ?></a></td>
+			<td class="listtdleft"><a href="javascript:set('action','edit_user');set('id','<?= escape_html($user["id"]) ?>');verzend();"><?= escape_html($user["username"]) ?></a></td>
+			<td class="listtd"><? echo escape_html($user['company']); ?></td>
 			<td class="listtd"><? echo $a->uids[$user["uid"]] ? $a->uids[$user["uid"]] : $user["uid"]; ?></td>
 			<td class="listtd"><? echo $a->gids[$user["gid"]] ? $a->gids[$user["gid"]] : $user["gid"]; ?></td>
 			<td class="listtd"><?=$user["dir"]?> <? if ($a->settings["check_access"]) { ?>(<?=$right?>)<? } ?></td>

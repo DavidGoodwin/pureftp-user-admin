@@ -24,6 +24,7 @@ $config["sql_user"]    = "user";
 $config["sql_pass"]    = "pass";
 $config["sql_dbase"]   = "pureftp";
 $config["sql_table"]   = "logins";
+$config["field_id"]    = "id";
 $config["field_uid"]   = "uid";
 $config["field_gid"]   = "gid";
 $config["field_pass"]  = "password";

@@ -35,6 +35,20 @@ class pureuseradmin {
      * @access public
      */
     public $gids     = Array();
+    
+    /**
+     * The company of the user who is logged-in and using the system.
+     * @var string Name of the company to which they belong.
+     * @access public
+     */
+    public $adminCompany = '_unknown_company_';
+    
+    /**
+     * Stores an array of errors encountered/thrown.
+     * @var array Associative array of errors.
+     * @access public
+     */
+    public $errors = array();
 
     /**
      * Generate a password statement for the database query.
@@ -52,7 +66,7 @@ class pureuseradmin {
             $ret = "'".md5($passwd)."'";
         } else {
             //error
-            error("update user-password","Please provide a valid password encryption method in the configuration section");
+            $this->addError("Update User's Password", "Please provide a valid password encryption method in the configuration section");
         }
         return $ret;
     }
@@ -93,7 +107,7 @@ class pureuseradmin {
             }
             // if by now it still isn't loaded we miss the module.
             if (!extension_loaded("mysql")) {
-                gen_error("MySQL support unavailable");
+                $this->addError("Database Error", "MySQL support unavailable");
                 exit();
             }
         } elseif($sql_type == "postgres") {
@@ -103,13 +117,13 @@ class pureuseradmin {
             }
             // if by now it still isn't loaded we miss the module.
             if (!extension_loaded("pgsql")) {
-                gen_error("PostgreSQL support unavailable");
+                $this->addError("Database Error", "PostgreSQL support unavailable");
                 exit();
             }
         } else {
             // unsupported database type
-            //gen_error("We dont support database system $sql_type");
-            //exit();
+            $this->addError("Database Error", "We dont support database system $sql_type");
+            exit();
         }
     }
 
@@ -194,6 +208,13 @@ class pureuseradmin {
             return false;
             //error, $userinfo is an array with fields from edit form
         }
+        
+        // If $this->adminCompany is empty, then they're an admin and can add users to any company they like. If not,
+        // they can only add users to the company to which they themselves belong.
+        if (!empty($this->adminCompany)) {
+            $userinfo["company"] = $this->adminCompany;
+        }
+        
         // update or insert ?
         if ($userinfo["update"]) {
             $sql = "UPDATE ".$this->settings["sql_table"]." SET ";
@@ -208,15 +229,23 @@ class pureuseradmin {
                     $sql .= ", ".$this->settings["field_pass"]."=".self::mkpass($userinfo["password"]);
                 }
             }
-            $sql .= " WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
+            $sql .= " WHERE ".$this->settings["field_id"]."='".$userinfo["id"]."'";
+            if (!empty($this->adminCompany)) {
+                $sql .= " AND ".$this->settings["field_company"]."='".$this->adminCompany."'";
+            }
         } else {
             // check if name is already in DB.
-            $sql = "SELECT COUNT(*) FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
+            $sql  = "SELECT COUNT(*) FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
+            $company = $this->adminCompany;
+            if (empty($company)) {
+                $company = $userinfo["company"];
+            }
+            $sql .= " AND ".$this->settings["field_company"]."='".$company."'";
             $res = sql_query($sql);
             $aantal = sql_result($res,0);
             if ($aantal) {
+                $this->addError("User Name In Use", "There is already a user with that name. Please choose another user name.");
                 return false;
-                //error
             } else {
                 $sql = "INSERT INTO ".$this->settings["sql_table"]." (".$this->settings["field_user"].",".$this->settings["field_pass"].",".$this->settings["field_uid"].",".$this->settings["field_gid"].",".$this->settings["field_dir"]."," . $this->settings['field_email'] . "," . $this->settings['field_company'] . ") VALUES (";
                 $sql .= "'".$userinfo["username"]."', ";
@@ -242,7 +271,9 @@ class pureuseradmin {
         umask(0);
         foreach(array('', '/in', '/out') as $dir) {
             if(!is_dir($userinfo['dir'] . $dir)) {
-                mkdir($userinfo['dir'] . $dir);
+                if(!@mkdir($userinfo['dir'] . $dir)) {
+                    $this->addError("File-System Error", "Could not create directory: '{$userinfo['dir']}$dir'");
+                }
             }
         }
         return true;
@@ -256,7 +287,11 @@ class pureuseradmin {
      * @access public
      */
     public function delete_user($userinfo) {
-        $sql = "DELETE FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
+        $sql = "DELETE FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_id"]."='".$userinfo["id"]."'";
+        // They can only delete users from their own company. Unless they're an admin.
+        if (!empty($this->adminCompany)) {
+            $sql .= " AND ".$this->settings["field_company"]."='".$this->adminCompany."'";
+        }
         $res = sql_query($sql);
         @rmdir($userinfo['dir']); // will probably fail due to access issues.
         return true;
@@ -264,13 +299,17 @@ class pureuseradmin {
 
     /**
      * Get a user from the database.
-     * <code> $userlist = $instance->get_user($userinfo); </code>
-     * @param array $userinfo
+     * <code> $userlist = $instance->get_user($id); </code>
+     * @param integer $id ID of the user.
      * @return array A user with all info that is in the database.
      * @access public
      */
-    public function get_user($userinfo) {
-        $sql = "SELECT * FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
+    public function get_user($id) {
+        $sql = "SELECT * FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_id"]."='".intval($id)."'";
+        // They can only see users from their own company. Unless they're an admin.
+        if (!empty($this->adminCompany)) {
+            $sql .= " AND ".$this->settings["field_company"]."='".$this->adminCompany."'";
+        }
         $res = sql_query($sql);
         $userinfo = sql_fetch_assoc($res);
         return $userinfo;
@@ -282,27 +321,26 @@ class pureuseradmin {
      * @param string $search Searchstring to limit results.
      * @param integer $start Record in database to start output.
      * @param integer $pagesize Number of users to show on a page.
-     * @param string $company Name of the company to which users must belong.
      * @return array All users with all info that is in the database.
      * @access public
      */
-    public function get_all_users($search = "", $start = 0, $pagesize = 0, $company = "") {
+    public function get_all_users($search = "", $start = 0, $pagesize = 0) {
         if (!$pagesize) { $pagesize = $this->settings["page_size"]; }
         if ($search) {
             $q = " WHERE (".$this->settings["field_user"]." LIKE '%$search%' OR ".$this->settings["field_dir"]." LIKE '%$search%')";
         } else {
             $q = "";
         }
-        if (!empty($company)) {
+        if (!empty($this->adminCompany)) {
             if (empty($q)) {
                 $q .= " WHERE";
             }
             else {
                 $q .= " AND";
             }
-            $q .= " ".$this->settings["field_company"]." = '$company'";
+            $q .= " ".$this->settings["field_company"]." = '{$this->adminCompany}'";
         }
-        $sql = "SELECT * FROM ".$this->settings["sql_table"]."$q ORDER BY ".$this->settings["field_user"]." LIMIT $start, $pagesize";
+        $sql = "SELECT * FROM ".$this->settings["sql_table"]."$q ORDER BY ".$this->settings["field_company"].", ".$this->settings["field_user"]." LIMIT $start, $pagesize";
         $res = sql_query($sql);
         $users = Array();
         while ($row = sql_fetch_assoc($res)) {
@@ -316,24 +354,23 @@ class pureuseradmin {
      * Get number of users in the database.
      * <code> $nr_users = $instance->get_nr_users(); </code>
      * @param string $search Searchstring to limit results.
-     * @param string $company Name of the company to which users must belong.
      * @return integer Number of users in the database.
      * @access public
      */
-    public function get_nr_users($search = "", $company = "") {
+    public function get_nr_users($search = "") {
         if ($search) {
             $q = " WHERE (".$this->settings["field_user"]." LIKE '%$search%' OR ".$this->settings["field_dir"]." LIKE '%$search%')";
         } else {
             $q = "";
         }
-        if (!empty($company)) {
+        if (!empty($this->adminCompany)) {
             if (empty($q)) {
                 $q .= " WHERE";
             }
             else {
                 $q .= " AND";
             }
-            $q .= " ".$this->settings["field_company"]." = '$company'";
+            $q .= " ".$this->settings["field_company"]." = '{$this->adminCompany}'";
         }
         $sql = "SELECT COUNT(*) FROM ".$this->settings["sql_table"]."$q";
         $res = sql_query($sql);
@@ -375,6 +412,19 @@ class pureuseradmin {
             $rights["error"] = "No such directory";
         }
         return $rights;
+    }
+    
+    /**
+     * Adds error messages to the instance for later retrieval.
+     * <code> $instance->addError("File System Error", "Cannot create directory."); </code>
+     * @param string $title Title of error message.
+     * @param string $body Main error message text.
+     */
+    public function addError ($title, $body) {
+        if (empty($this->errors[$title])) {
+            $this->errors[$title] = array();
+        }
+        $this->errors[$title][] = $body;
     }
 }
 
