@@ -295,7 +295,7 @@ if (empty($a->adminCompany)) {
     echo "<option value=\"\"></option>";
     $companies = $a->getSetting("companies");
     if (is_array($companies)) {
-        foreach ($companies as $company) {
+        foreach ($companies as $company => $users) {
             $selected = '';
             if(!empty($userinfo['company']) && $userinfo['company'] == $company) {
                 $selected = ' selected="selected"';
