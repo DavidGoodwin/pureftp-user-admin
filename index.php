@@ -11,7 +11,13 @@ $a = new pureuseradmin();
 // Only show them users belonging to the company under which they logged in.
 $company = "_unknown_company_";
 if (!empty($_SERVER["PHP_AUTH_USER"])) {
-    $company = $_SERVER["PHP_AUTH_USER"];
+    $companies = $a->getSetting("companies");
+    foreach ($companies as $key => $users) {
+        if (in_array($_SERVER["PHP_AUTH_USER"], $users)) {
+            $company = $key;
+            break;
+        }
+    }
     
     // Unless they're an admin. In which case, they see all.
     $admins = $a->getSetting("super_admins");
