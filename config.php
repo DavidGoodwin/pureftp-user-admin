@@ -6,7 +6,7 @@
 
 $config = array();
 $config["version"]     = "0.3.0";
-$config["homepage"]    = "http://sourceforge.net/projects/PureUserAdmin";
+$config["homepage"]    = "https://github.com/DavidGoodwin/pureftp-user-admin";
 // 0 = disabled, 1 = enabled - check if user has read/write access in homedir
 $config["check_access"]= "1"; 
 // 0 = disabled, 1 = enabled - email user with password etc. Database needs field "email"

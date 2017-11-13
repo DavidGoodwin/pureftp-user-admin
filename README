@@ -1,13 +1,16 @@
-PureUserAdmin v 0.3.0
+# PureUserAdmin v 0.4.0
+
+'''Danger: code vulnerable to SQL injection. Update in progress '''
 
 
-Changes since 0.2.1, by DG
+
+# Changes since 0.2.1, by DG
 
  * Move configuration into a seperate config file
  * Attempt to remove some XSS issues; the code base is still vulnerable to SQL injection and requires magic_quotes to be enabled.
 
 
-
+# Old stuff.
 
 
 Copyright (c) 2004, Michiel van Baak <mvanbaak (AT) users (DOT) sourceforge (DOT) net>

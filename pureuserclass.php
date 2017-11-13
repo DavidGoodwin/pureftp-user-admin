@@ -13,10 +13,10 @@ require_once(dirname(__FILE__) . '/functions.php');
  * @author Michiel van Baak <mvanbaak@users.sourceforge.net>
  * @copyright Copyright 2004, Michiel van Baak
  */
+class pureuseradmin
+{
 
-class pureuseradmin {
-
-    const DEBUG      = 1;
+    const DEBUG = 1;
     /**
      * This variable is filled in the constructor. It can be changed with a public function.
      * @var array all settings needed
@@ -28,13 +28,13 @@ class pureuseradmin {
      * @var array uids on the system.
      * @access public
      */
-    public $uids     = Array();
+    public $uids = Array();
     /**
      * This variable is filled in the constructor.
      * @var array gids on the system.
      * @access public
      */
-    public $gids     = Array();
+    public $gids = Array();
 
     /**
      * Generate a password statement for the database query.
@@ -43,16 +43,17 @@ class pureuseradmin {
      * @return string The string to use in the sql statement.
      * @access private
      */
-    private function mkpass ($passwd) {
+    private function mkpass($passwd)
+    {
         if ($this->settings["pwcrypt"] == "password") {
-            $ret = "password('".$passwd."')";
+            $ret = "password('" . $passwd . "')";
         } elseif ($this->settings["pwcrypt"] == "cleartext") {
-            $ret = "'".$passwd."'";
+            $ret = "'" . $passwd . "'";
         } elseif ($this->settings["pwcrypt"] == "md5") {
-            $ret = "'".md5($passwd)."'";
+            $ret = "'" . md5($passwd) . "'";
         } else {
             //error
-            error("update user-password","Please provide a valid password encryption method in the configuration section");
+            error("update user-password", "Please provide a valid password encryption method in the configuration section");
         }
         return $ret;
     }
@@ -65,17 +66,18 @@ class pureuseradmin {
      * <code> self::dbinit(); </code>
      * @access private
      */
-    private function db_init () {
+    private function db_init()
+    {
         if ($this->settings["sql_type"] == "mysql") {
             $db = mysql_pconnect($this->settings["sql_server"], $this->settings["sql_user"], $this->settings["sql_pass"]) or die("Cannot connect to MySQL Server");
-            mysql_select_db($this->settings["sql_dbase"], $db) or die("Database ".$this->settings["sql_dbase"]." cannot be selected");
+            mysql_select_db($this->settings["sql_dbase"], $db) or die("Database " . $this->settings["sql_dbase"] . " cannot be selected");
             include("functions_mysql.php");
         } elseif ($this->settings["sql_type"] == "postgres") {
-            $db = pg_pconnect("host=".$this->settings["sql_server"]." dbname=".$this->settings["sql_dbase"]." user=".$this->settings["sql_user"]." password=".$this->settings["sql_pass"]) or die("Cannot connect to PostgreSQL Server or cannot select database ".$this->settings["sql_dbase"]);
+            $db = pg_pconnect("host=" . $this->settings["sql_server"] . " dbname=" . $this->settings["sql_dbase"] . " user=" . $this->settings["sql_user"] . " password=" . $this->settings["sql_pass"]) or die("Cannot connect to PostgreSQL Server or cannot select database " . $this->settings["sql_dbase"]);
             include("functions_postgres.php");
         }
     }
-    
+
     /**
      * PHP database support
      *
@@ -85,7 +87,8 @@ class pureuseradmin {
      * @param string $sql_type database server type. "mysql" or "postgres"
      * @access private
      */
-    private function load_sql ($sql_type) {
+    private function load_sql($sql_type)
+    {
         if ($sql_type == "mysql") {
             // check for mysql module and try to load it when absent
             if (!extension_loaded("mysql")) {
@@ -96,7 +99,7 @@ class pureuseradmin {
                 gen_error("MySQL support unavailable");
                 exit();
             }
-        } elseif($sql_type == "postgres") {
+        } elseif ($sql_type == "postgres") {
             // check for postgresql module and try to load it when absent
             if (!extension_loaded("pgsql")) {
                 @dl("pgsql");
@@ -119,8 +122,9 @@ class pureuseradmin {
      * @return array uids as key and usernames as value.
      * @access private
      */
-    private function load_uids() {
-        $uids = array(65534=> 'nobody');
+    private function load_uids()
+    {
+        $uids = array(65534 => 'nobody');
         return $uids;
     }
 
@@ -130,8 +134,9 @@ class pureuseradmin {
      * @return array gids as key and groupnames as value.
      * @access private
      */
-    private function load_gids() {
-        $gids = array(65534 => 'nobody' );
+    private function load_gids()
+    {
+        $gids = array(65534 => 'nobody');
         return $gids;
     }
 
@@ -143,7 +148,8 @@ class pureuseradmin {
      * <code> $instance = new pureuseradmin(); </code>
      * @access protected
      */
-    function __construct() {
+    function __construct()
+    {
         /* global settings */
         $this->settings = require_once(dirname(__FILE__) . '/config.php');
 
@@ -164,7 +170,8 @@ class pureuseradmin {
      * @param string $value The new value.
      * @access public
      */
-    public function changeSetting ($setting, $value) {
+    public function changeSetting($setting, $value)
+    {
         $this->settings[$setting] = $value;
     }
 
@@ -175,38 +182,39 @@ class pureuseradmin {
      * @return boolean true when success, false on error.
      * @access public
      */
-    public function save_user ($userinfo) {
+    public function save_user($userinfo)
+    {
         if (!count($userinfo)) {
             return false;
             //error, $userinfo is an array with fields from edit form
         }
         // update or insert ?
         if ($userinfo["update"]) {
-            $sql = "UPDATE ".$this->settings["sql_table"]." SET ";
-            $sql .= $this->settings["field_uid"]."=". (int) $userinfo["uid"];
-            $sql .= ", ".$this->settings["field_gid"]."=". (int) $userinfo["gid"];
-            $sql .= ", ".$this->settings["field_dir"]."='".$userinfo["dir"]."'";
-            $sql .= ", ".$this->settings["field_email"]."='".$userinfo["email"]."'";
+            $sql = "UPDATE " . $this->settings["sql_table"] . " SET ";
+            $sql .= $this->settings["field_uid"] . "=" . (int)$userinfo["uid"];
+            $sql .= ", " . $this->settings["field_gid"] . "=" . (int)$userinfo["gid"];
+            $sql .= ", " . $this->settings["field_dir"] . "='" . $userinfo["dir"] . "'";
+            $sql .= ", " . $this->settings["field_email"] . "='" . $userinfo["email"] . "'";
             // are we going to reset the password ?
             if ($userinfo["password"]) {
                 if ($userinfo["password"] == $userinfo["password1"]) {
-                    $sql .= ", ".$this->settings["field_pass"]."=".self::mkpass($userinfo["password"]);
+                    $sql .= ", " . $this->settings["field_pass"] . "=" . self::mkpass($userinfo["password"]);
                 }
             }
-            $sql .= " WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
+            $sql .= " WHERE " . $this->settings["field_user"] . "='" . $userinfo["username"] . "'";
         } else {
             // check if name is already in DB.
-            $sql = "SELECT COUNT(*) FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
+            $sql = "SELECT COUNT(*) FROM " . $this->settings["sql_table"] . " WHERE " . $this->settings["field_user"] . "='" . $userinfo["username"] . "'";
             $res = sql_query($sql);
-            $aantal = sql_result($res,0);
+            $aantal = sql_result($res, 0);
             if ($aantal) {
                 return false;
                 //error
             } else {
-                $sql = "INSERT INTO ".$this->settings["sql_table"]." (".$this->settings["field_user"].",".$this->settings["field_pass"].",".$this->settings["field_uid"].",".$this->settings["field_gid"].",".$this->settings["field_dir"]."," . $this->settings['field_email'] . ") VALUES (";
-                $sql .= "'".$userinfo["username"]."', ";
-                $sql .= self::mkpass($userinfo["password"]).", ";
-                $sql .= $userinfo["uid"].", ".$userinfo["gid"].", '".$userinfo["dir"]."', '";
+                $sql = "INSERT INTO " . $this->settings["sql_table"] . " (" . $this->settings["field_user"] . "," . $this->settings["field_pass"] . "," . $this->settings["field_uid"] . "," . $this->settings["field_gid"] . "," . $this->settings["field_dir"] . "," . $this->settings['field_email'] . ") VALUES (";
+                $sql .= "'" . $userinfo["username"] . "', ";
+                $sql .= self::mkpass($userinfo["password"]) . ", ";
+                $sql .= $userinfo["uid"] . ", " . $userinfo["gid"] . ", '" . $userinfo["dir"] . "', '";
                 $sql .= $userinfo['email'] . "'";
                 $sql .= ")";
             }
@@ -215,18 +223,18 @@ class pureuseradmin {
         $res = sql_query($sql);
         if ($this->settings["notify_user"] && strlen($userinfo["email"])) {
             // send email
-            $subject = $this->settings["ftp_hostname"]." FTP information";
-            $body = "Hi ".$userinfo["username"].",\n\n";
+            $subject = $this->settings["ftp_hostname"] . " FTP information";
+            $body = "Hi " . $userinfo["username"] . ",\n\n";
             $body .= "Here is some information you will need to login with FTP:\n";
-            $body .= "hostname: ".$this->settings["ftp_hostname"]."\n";
-            $body .= "username: ".$userinfo["username"]."\n";
-            $body .= "password: ".$userinfo["password"]."\n\n";
+            $body .= "hostname: " . $this->settings["ftp_hostname"] . "\n";
+            $body .= "username: " . $userinfo["username"] . "\n";
+            $body .= "password: " . $userinfo["password"] . "\n\n";
             $body .= "Please download and use an FTP client application (such as Filezilla) rather than using a browser to upload and download files\n Thanks\n";
-            mail($userinfo["email"], $subject, $body, "From: ".$this->settings["admin_email"]."\r\n", "-f".$this->settings["admin_email"]);
+            mail($userinfo["email"], $subject, $body, "From: " . $this->settings["admin_email"] . "\r\n", "-f" . $this->settings["admin_email"]);
         }
         umask(0);
-        foreach(array('', '/in', '/out') as $dir) {
-            if(!is_dir($userinfo['dir'] . $dir)) {
+        foreach (array('', '/in', '/out') as $dir) {
+            if (!is_dir($userinfo['dir'] . $dir)) {
                 mkdir($userinfo['dir'] . $dir);
             }
         }
@@ -240,8 +248,9 @@ class pureuseradmin {
      * @return boolean true when success, false on error.
      * @access public
      */
-    public function delete_user($userinfo) {
-        $sql = "DELETE FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
+    public function delete_user($userinfo)
+    {
+        $sql = "DELETE FROM " . $this->settings["sql_table"] . " WHERE " . $this->settings["field_user"] . "='" . $userinfo["username"] . "'";
         $res = sql_query($sql);
         @rmdir($userinfo['dir']); // will probably fail due to access issues.
         return true;
@@ -254,8 +263,9 @@ class pureuseradmin {
      * @return array A user with all info that is in the database.
      * @access public
      */
-    public function get_user($userinfo) {
-        $sql = "SELECT * FROM ".$this->settings["sql_table"]." WHERE ".$this->settings["field_user"]."='".$userinfo["username"]."'";
+    public function get_user($userinfo)
+    {
+        $sql = "SELECT * FROM " . $this->settings["sql_table"] . " WHERE " . $this->settings["field_user"] . "='" . $userinfo["username"] . "'";
         $res = sql_query($sql);
         $userinfo = sql_fetch_assoc($res);
         return $userinfo;
@@ -270,14 +280,17 @@ class pureuseradmin {
      * @return array All users with all info that is in the database.
      * @access public
      */
-    public function get_all_users($search = "", $start = 0, $pagesize = 0) {
-        if (!$pagesize) { $pagesize = $this->settings["page_size"]; }
+    public function get_all_users($search = "", $start = 0, $pagesize = 0)
+    {
+        if (!$pagesize) {
+            $pagesize = $this->settings["page_size"];
+        }
         if ($search) {
-            $q = " WHERE ".$this->settings["field_user"]." LIKE '%$search%' OR ".$this->settings["field_dir"]." LIKE '%$search%'";
+            $q = " WHERE " . $this->settings["field_user"] . " LIKE '%$search%' OR " . $this->settings["field_dir"] . " LIKE '%$search%'";
         } else {
             $q = "";
         }
-        $sql = "SELECT * FROM ".$this->settings["sql_table"]."$q ORDER BY ".$this->settings["field_user"]." LIMIT $start, $pagesize";
+        $sql = "SELECT * FROM " . $this->settings["sql_table"] . "$q ORDER BY " . $this->settings["field_user"] . " LIMIT $start, $pagesize";
         $res = sql_query($sql);
         $users = Array();
         while ($row = sql_fetch_assoc($res)) {
@@ -285,7 +298,7 @@ class pureuseradmin {
         }
         return $users;
     }
-    
+
 
     /**
      * Get number of users in the database.
@@ -294,15 +307,16 @@ class pureuseradmin {
      * @return integer Number of users in the database.
      * @access public
      */
-    public function get_nr_users($search = "") {
+    public function get_nr_users($search = "")
+    {
         if ($search) {
-            $q = " WHERE ".$this->settings["field_user"]." LIKE '%$search%' OR ".$this->settings["field_dir"]." LIKE '%$search%'";
+            $q = " WHERE " . $this->settings["field_user"] . " LIKE '%$search%' OR " . $this->settings["field_dir"] . " LIKE '%$search%'";
         } else {
             $q = "";
         }
-        $sql = "SELECT COUNT(*) FROM ".$this->settings["sql_table"]."$q";
+        $sql = "SELECT COUNT(*) FROM " . $this->settings["sql_table"] . "$q";
         $res = sql_query($sql);
-        $count = sql_result($res,0);
+        $count = sql_result($res, 0);
         return $count;
     }
 
@@ -315,26 +329,39 @@ class pureuseradmin {
      * @return array owner,group,world octal permission and read and write flag.
      * @access public
      */
-    public function check_access ($homedir, $uid, $gid) {
+    public function check_access($homedir, $uid, $gid)
+    {
         if (file_exists($homedir)) {
             $fuid = fileowner($homedir);
             $fgid = filegroup($homedir);
             $fperms = fileperms($homedir);
-            $fperm = substr(sprintf("%o",$fperms),2);
-            $rights["owner"] = substr($fperm,0,1);
-            $rights["group"] = substr($fperm,1,1);
-            $rights["world"] = substr($fperm,2,1);
+            $fperm = substr(sprintf("%o", $fperms), 2);
+            $rights["owner"] = substr($fperm, 0, 1);
+            $rights["group"] = substr($fperm, 1, 1);
+            $rights["world"] = substr($fperm, 2, 1);
             $rights["read"] = 0;
             $rights["write"] = 0;
-            if ($rights["world"] > 6) { $rights["write"] = 1; }
-            if ($rights["world"] > 4) { $rights["read"] = 1; }
+            if ($rights["world"] > 6) {
+                $rights["write"] = 1;
+            }
+            if ($rights["world"] > 4) {
+                $rights["read"] = 1;
+            }
             if ($uid == $fuid) {
-                if ($rights["owner"] > 6) { $rights["write"] = 1; }
-                if ($rights["owner"] > 4) { $rights["read"] = 1; }
+                if ($rights["owner"] > 6) {
+                    $rights["write"] = 1;
+                }
+                if ($rights["owner"] > 4) {
+                    $rights["read"] = 1;
+                }
             }
             if ($gid == $fgid) {
-                if ($rights["group"] > 6) { $rights["write"] = 1; }
-                if ($rights["group"] > 4) { $rights["read"] = 1; }
+                if ($rights["group"] > 6) {
+                    $rights["write"] = 1;
+                }
+                if ($rights["group"] > 4) {
+                    $rights["read"] = 1;
+                }
             }
         } else {
             $rights["error"] = "No such directory";
