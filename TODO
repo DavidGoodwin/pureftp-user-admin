@@ -1,4 +1,0 @@
- * Fix SQL injections
- * Update to support PDO
- * Update to use Twig or Smarty for HTML output.
-
