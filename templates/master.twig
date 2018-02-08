@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<head>
+    <meta chaset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>PureUserAdmin - {{ page_title }}</title>
+    <style type="text/css">
+        .copyright {
+            bottom: 0px;
+            right: 0px;
+            height: 15px;
+            border-top: 3px solid #6699CC;
+            border-bottom: 3px solid #6699CC;
+            background-color: #336699;
+            color: #E4E9EB;
+        }
+
+        html, body, form {
+            height: 100%;
+            width: 100%;
+            margin: 0px 0px 0px 0px;
+        }
+
+        td {
+            background-color: #FFFFFF;
+        }
+
+        .pagetable {
+            height: 100%;
+            width: 100%;
+        }
+
+        .logo {
+            height: 50px;
+            width: 100%;
+            left: 50%;
+        }
+
+        .maintd {
+            width: 100%;
+            right: 50%;
+            height: 100%;
+        }
+
+        .links {
+            border-top: 3px solid #6699CC;
+            border-bottom: 3px solid #6699CC;
+            background-color: #336699;
+            color: #E4E9EB;
+        }
+
+        .listtdleft {
+            border-left: 1px solid #000000;
+            border-right: 1px solid #000000;
+            border-bottom: 1px solid #000000;
+        }
+
+        .listtd {
+            border-right: 1px solid #000000;
+            border-bottom: 1px solid #000000;
+
+        }
+
+        .headertdleft {
+            border-left: 1px solid #000000;
+            border-top: 3px solid #6699CC;
+            border-bottom: 3px solid #6699CC;
+            background-color: #336699;
+            color: #E4E9EB;
+        }
+
+        .headertd {
+            border-top: 3px solid #6699CC;
+            border-bottom: 3px solid #6699CC;
+            background-color: #336699;
+            color: #E4E9EB;
+        }
+
+        .headertdright {
+            border-right: 1px solid #000000;
+            border-top: 3px solid #6699CC;
+            border-bottom: 3px solid #6699CC;
+            background-color: #336699;
+            color: #E4E9EB;
+        }
+
+        a.toplinks {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <ul style="text-align: center;">
+            <li style="display: inline-block"><a class="toplinks" href="?">[ Home ]</a></li>
+            <li style="display: inline-block"><a class="toplinks" href="?action=new_user">[ New User ]</a></li>
+            <li style="display: inline-block"><a class="toplinks" href="?action=user_list">[ Userlist ]</a></li>
+            <li style="display: inline-block"><a class="toplinks" href="https://github.com/DavidGoodwin/pureftp-user-admin">[ Project Page ]</a></li>
+        </ul>
+    </nav>
+
+    {%  for message in messages.info %}
+    <p style="color: blue">{{  message }}</p>
+    {%  endfor %}
+    {%  for message in messages.error %}
+        <p style="color: red">{{  message }}</p>
+    {%  endfor %}
+
+</header>
+
+
+<article>
+    <div style="width: 90%; margin-left: auto; margin-right: auto;">
+        {% include body_template %}
+    </div>
+</article>
+</body>
+</html>

@@ -1,5 +1,5 @@
-CREATE TABLE  `pureftp`.`logins` (
-	`id` INT NOT NULL AUTO_INCREMENT ,
+CREATE TABLE `logins` (
+	`id` INT NOT NULL AUTO_INCREMENT,
 	`uid` INT NOT NULL ,
 	`gid` INT NOT NULL ,
 	`email` VARCHAR( 255 ) NULL ,
@@ -7,4 +7,4 @@ CREATE TABLE  `pureftp`.`logins` (
 	`username` VARCHAR( 255 ) NOT NULL ,
 	`dir`	VARCHAR( 255 ) NOT NULL,
 	PRIMARY KEY (  `id` )
-) ENGINE = INNODB COMMENT =  'pureuserftp thing'
+) ENGINE = INNODB COMMENT =  'pure-user-ftpadmin'

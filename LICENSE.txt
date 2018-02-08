@@ -1,0 +1,5 @@
+GPL v3.0
+
+See : http://pureuseradmin.sourceforge.net
+See : https://github.com/DavidGoodwin/pureftp-user-admin/blob/aa19ef51dec4ef1e001e228c7e02286fb1e54c0c/pureuserclass.php
+See : http://www.gnu.org/licenses/gpl.html

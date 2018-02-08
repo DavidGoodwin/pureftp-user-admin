@@ -5,7 +5,7 @@
  */
 
 $config = array();
-$config["version"]     = "0.3.0";
+$config["version"]     = "0.4.0";
 $config["homepage"]    = "https://github.com/DavidGoodwin/pureftp-user-admin";
 // 0 = disabled, 1 = enabled - check if user has read/write access in homedir
 $config["check_access"]= "1"; 
@@ -15,14 +15,14 @@ $config["admin_email"] = "some.one.to.email@example.com";
 $config["ftp_hostname"]= "your.host.name";
 
 // database settigs 
-// PureFTPd only supports MySQL and PostgreSQL (mysql and postgres)
-// Change these to match your local setup - see also schema.sql...
-$config["sql_type"]    = "mysql"; 
-$config["sql_server"]  = "localhost";
-$config["sql_user"]    = "pureftp";
-$config["sql_pass"]    = "changeme";
-$config["sql_dbase"]   = "pureftp";
+// We require a PDO DSN.
+
+$config['database_dsn'] = "mysql:host=localhost;dbname=pureftpadmin";
+$config['database_user'] = 'dg';
+$config['database_pass'] = 'gingerdog';
+
 $config["sql_table"]   = "logins";
+
 $config["field_uid"]   = "uid";
 $config["field_gid"]   = "gid";
 $config["field_pass"]  = "password";
@@ -37,7 +37,8 @@ $config["pwcrypt"]     = "md5";
 // we use nobody (on OpenBSD)
 $config["default_uid"] = "65534";		 
 // we use nobody	(on OpenBSD)
-$config["default_gid"] = "65534";    
+$config["default_gid"] = "65534";
+
 // number of records on 1 page in userlist
 $config["page_size"]   = "40";        
 

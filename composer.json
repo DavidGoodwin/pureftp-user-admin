@@ -1,0 +1,40 @@
+{
+    "name": "davidgoodwin/pureftp-user-admin",
+    "description": "Web UI for managing PureFTP users within a SQL database",
+    "type": "project",
+    "require-dev": {
+        "jakub-onderka/php-parallel-lint": "^0.9.2",
+
+        "phpunit/phpunit": "^6.0"
+    },
+    "license": "GPL v2.0",
+    "authors": [
+        {
+            "name": "David Goodwin",
+            "email": "david@palepurple.co.uk"
+        }
+    ],
+    "require": {
+        "twig/twig": "^2.0",
+        "zf1/zend-form": "^1.12",
+        "zf1/zend-view": "^1.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "PureFTPAdmin\\" : "include\\"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PureFTPAdmin\\Test\\": "tests\\"
+        }
+    },
+    "scripts": {
+        "lint": "php vendor/bin/parallel-lint --exclude vendor public include",
+        "phpunit": "php vendor/bin/phpunit",
+        "test": [
+            "@lint",
+            "@phpunit"
+        ]
+    }
+}

@@ -1,0 +1,37 @@
+<h1>User List</h1>
+
+
+<table border="0">
+    <tr>
+        <th>Username</th>
+        <th>Home</th>
+        <th>Email</th>
+        <th>UID</th>
+        <th>GID</th>
+        <th>Permissions?</th>
+        <th>Actions</th>
+    </tr>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.username |e }}</td>
+            <td>{{ user.dir |e }}</td>
+            <td>{{ user.email |e }}</td>
+            <td>{{ user.uid |e }}</td>
+            <td>{{ user.gid | e}}</td>
+            <td>{{ user.rights | e }}</td>
+            <td>
+                <form method="?">
+                    <input type="submit" value="Edit"/>
+                    <input type="hidden" name="action" value="edit_user"/>
+                    <input type="hidden" name="username" value="{{ user.username | escape('html_attr') }}"/>
+                </form>
+                <form method="?">
+                    <input type="submit" value="Delete"/>
+                    <input type="hidden" name="action" value="delete_user"/>
+                    <input type="hidden" name="username" value="{{ user.username | escape('html_attr') }}"/>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+
+</table>
