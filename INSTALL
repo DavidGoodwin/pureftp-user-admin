@@ -3,14 +3,15 @@
 PureUserAdmin requires :
   
   * A http server
-  * PHP5, with mysql.so/psql.so module (or build in support).
+  * PHP5 or PHP7, with PDO support (mysql, pgsql, sqlite etc)
   * MySQL/PostgreSQL daemon.
     * PureFTPd with mysql/postgresql auth config
 	* A webbrowser
 
 # Installation.
 
-  * Unpack it somewhere in your www root.
-  * Edit config.php and index.php to reflect your system.
-  * Edit config.php and index.php to reflect your system.
+  * Unpack it somewhere ...
+  * Configure Apache to read from the public/ directory.
+  * If there is no vendor/ directory get Composer (https://getcomposer.org) and run ```composer install ```
+  * Edit config.php to reflect your system.
 
