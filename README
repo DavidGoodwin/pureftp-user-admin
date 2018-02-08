@@ -1,7 +1,17 @@
 # PureUserAdmin v 0.4.0
 
-'''Danger: code vulnerable to SQL injection. Update in progress '''
 
+# TODO
+
+ * Basic tests
+ * docker-services.yml for example with pureftp + end-to-end test.
+
+# Changes since 0.3 ...
+
+ * Refactor codebase
+ * Try and remove XSS, and SQL Injection issues 
+ * Try and support multiple databases (via PDO)
+ 
 
 
 # Changes since 0.2.1, by DG
