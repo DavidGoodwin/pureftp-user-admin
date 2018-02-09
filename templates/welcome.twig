@@ -1,49 +1,57 @@
-
 <h1>Welcome</h1>
 
-<table border="0" cellspacing="0" cellpadding="2" >
+<style>
+    th {
+        text-align: right;
+    }
+    td {
+        padding-left: 5px;
+    }
+</style>
+
+<table >
     <tr>
-        <td class="headertdleft">Settings</td>
-        <td class="headertdright">&nbsp;</td>
+        <th>Settings</th>
+        <td>&nbsp;</td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">Debugging:</td>
-        <td class="listtd">{{ settings_debug }}</td>
+        <th>Debugging:</th>
+        <td>{{ settings_debug }}</td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">Program version:</td>
-        <td class="listtd">{{ settings_version }} </td>
+        <th>Program version:</th>
+        <td>{{ settings_version }} </td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">FTP server address:</td>
-        <td class="listtd">{{ settings_ftp_hostname }}</td>
+        <th>FTP server address:</th>
+        <td>{{ settings_ftp_hostname }}</td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">Admin email address:</td>
-        <td class="listtd">{{ settings_admin_email }} </td>
+        <th>Admin email address:</th>
+        <td>{{ settings_admin_email }} </td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">Database DSN:</td>
-        <td class="listtd">{{ settings_database_dsn }}</td>
+        <th>Database DSN:</th>
+        <td>{{ settings_database_dsn }}</td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">Password crypt method:</td>
-        <td class="listtd">{{ settings_pwcrypt }} </td>
+        <th>Password crypt method:</th>
+        <td>{{ settings_pwcrypt }} </td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">Check homedir access:</td>
-        <td class="listtd">{{ settings_check_access }} </td>
+        <th>Check homedir access:</th>
+        <td>{{ settings_check_access }} </td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">Email user:</td>
-        <td class="listtd">{{ settings_notify_user }} </td>
+        <th>Email user:</th>
+        <td>{{ settings_notify_user }} </td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">Default uid:</td>
-        <td class="listtd"> {{ settings_default_uid }} </td>
+        <th>Default uid:</th>
+        <td> {{ settings_default_uid }} </td>
     </tr>
     <tr>
-        <td class="listtdleft" align="right">Default gid:</td>
-        <td class="listtd"> {{ settings_default_gid }} </td>
+        <th>Default gid:</th>
+        <td> {{ settings_default_gid }} </td>
     </tr>
 </table>
