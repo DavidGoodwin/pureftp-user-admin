@@ -17,9 +17,9 @@ $config["ftp_hostname"]= "your.host.name";
 // database settigs 
 // We require a PDO DSN.
 
-$config['database_dsn'] = "mysql:host=localhost;dbname=pureftpadmin";
-$config['database_user'] = 'dg';
-$config['database_pass'] = 'gingerdog';
+$config['database_dsn'] = "mysql:host=localhost;dbname=pureftp";
+$config['database_user'] = 'db_username';
+$config['database_pass'] = 'db_password';
 
 $config["sql_table"]   = "logins";
 

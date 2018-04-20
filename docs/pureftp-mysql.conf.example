@@ -1,0 +1,13 @@
+# Example, minimal, pureftp config file for MySQL. Customise as appropriate.
+
+MYSQLSocket      /var/run/mysqld/mysqld.sock
+MYSQLUser       db_username
+MYSQLPassword   db_password
+MYSQLDatabase   pureftp
+MYSQLCrypt      md5
+MYSQLGetPW      SELECT password FROM logins WHERE username="\L" 
+MYSQLGetUID     SELECT uid FROM logins WHERE username="\L"  
+MYSQLGetGID     SELECT gid FROM logins WHERE username="\L"
+MYSQLGetDir     SELECT concat(dir, "/./") FROM logins WHERE username="\L"
+
+
