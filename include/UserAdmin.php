@@ -15,7 +15,24 @@ class UserAdmin
      * @var array all settings needed
      * @access public
      */
-    protected $settings = Array();
+    protected $settings;
+
+    private $database;
+
+    /**
+     * Class constructor
+     *
+     * This function is called as soon as an instance of the class is created.
+     * It will init the settings, connect to the database and load the uids and gids on the system.
+     * <code> $instance = new pureuseradmin(); </code>
+     * @access protected
+     */
+    public function __construct(Database $database, array $settings)
+    {
+        $this->database = $database;
+        $this->settings = $settings;
+
+    }
 
     /**
      * Generate a password statement for the database query.
@@ -35,7 +52,7 @@ class UserAdmin
             $ret = md5($passwd);
         } else {
             //error
-            error("update user-password", "Please provide a valid password encryption method in the configuration section");
+            throw new \Exception("Please provide a valid password encryption method in the configuration section");
         }
         return $ret;
     }
@@ -66,22 +83,6 @@ class UserAdmin
         ];
 
         return $gids;
-    }
-
-
-    /**
-     * Class constructor
-     *
-     * This function is called as soon as an instance of the class is created.
-     * It will init the settings, connect to the database and load the uids and gids on the system.
-     * <code> $instance = new pureuseradmin(); </code>
-     * @access protected
-     */
-    public function __construct(Database $database, array $settings)
-    {
-        $this->database = $database;
-        $this->settings = $settings;
-
     }
 
     /**
@@ -118,7 +119,7 @@ class UserAdmin
             $password_stuff ='';
             if (!empty($userinfo["password"])) {
                     $password_stuff = ", {$password_field} = :password ";
-                    $args['password'] = self::mkpass($userinfo['password']);
+                    $args['password'] = $this->mkpass($userinfo['password']);
 
             }
 
@@ -139,7 +140,7 @@ SQL;
 INSERT INTO {$this->settings['sql_table']} ({$uid_field}, {$gid_field}, {$dir_field}, {$email_field}, {$username_field}, {$password_field} )
 VALUES (:uid, :gid, :dir, :email, :username, :password)
 SQL;
-            $args['password'] = self::mkpass($userinfo['password']);
+            $args['password'] = $this->mkpass($userinfo['password']);
 
         }
 
@@ -154,6 +155,10 @@ SQL;
     }
 
 
+    /**
+     * @return bool
+     * @param array $userinfo 
+     */
     public function sendPostCreationEmail(array $userinfo)
     {
         if ($this->settings["notify_user"] && strlen($userinfo["email"])) {
@@ -173,9 +178,8 @@ SQL;
     /**
      * Delete a user from the database.
      * <code> $result = $instance->delete_user($userinfo); </code>
-     * @param string username
+     * @param string $username
      * @return boolean true when success, false on error.
-     * @access public
      */
     public function deleteUser($username)
     {
@@ -186,9 +190,8 @@ SQL;
     /**
      * Get a user from the database.
      * <code> $user = $instance->getUserByUsername($username); </code>
-     * @param array $userinfo
+     * @param string $username
      * @return array A user with all info that is in the database.
-     * @access public
      */
     public function getUserByUsername($username)
     {
@@ -196,11 +199,12 @@ SQL;
 
         $row = $this->database->selectOne($sql, ['username' => $username]);
 
-        var_dump($row);
-        die('x');
         return $this->remapFromDb($row);
     }
 
+    /**
+     * @return array
+     */
     private function remapFromDb(array $row) {
 
         if(empty($row)) {
@@ -229,7 +233,6 @@ SQL;
      * @param integer $start Record in database to start output.
      * @param integer $pagesize Number of users to show on a page.
      * @return array All users with all info that is in the database.
-     * @access public
      */
     public function getAllUsers($search = "", $start = 0, $pagesize = 0)
     {
@@ -262,7 +265,6 @@ SQL;
      * <code> $nr_users = $instance->get_nr_users(); </code>
      * @param string $search Searchstring to limit results.
      * @return integer Number of users in the database.
-     * @access public
      */
     public function get_nr_users($search = "")
     {
@@ -287,7 +289,6 @@ SQL;
      * @param int $uid The main userid of the user.
      * @param int $gid The main groupid of the user.
      * @return array owner,group,world octal permission and read and write flag.
-     * @access public
      */
     public function check_access($homedir, $uid, $gid)
     {

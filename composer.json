@@ -4,7 +4,8 @@
     "type": "project",
     "require-dev": {
         "jakub-onderka/php-parallel-lint": "^0.9.2",
-        "phpunit/phpunit": "^5.0"
+        "phpunit/phpunit": "^5.0",
+        "vimeo/psalm": "^1.0"
     },
     "license": "GPL v2.0",
     "authors": [

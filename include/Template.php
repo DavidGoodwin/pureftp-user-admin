@@ -13,12 +13,20 @@ class Template
 
     private $variables = [];
 
+    /**
+     * @param string $page_title
+     */
     public function __construct($page_title = '')
     {
         $this->variables['page_title'] = $page_title;
 
     }
 
+    /**
+     * @param string $variable
+     * @param mixed $value
+     * @return void
+     */
     public function assign($variable, $value)
     {
         if($value instanceof \PureFTPAdmin\Form\Form) {
