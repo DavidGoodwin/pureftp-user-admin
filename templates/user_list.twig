@@ -6,7 +6,7 @@
     }
     tr:nth-child(even) {background: #CCC}
     tr:nth-child(odd) {background: #FFF}
-    
+
 </style>
 
 <table border="0">
@@ -28,12 +28,12 @@
             <td>{{ user.gid | e}}</td>
             <td>{{ user.rights | e }}</td>
             <td>
-                <form method="?">
+                <form method="POST" action="?">
                     <input type="submit" value="Edit"/>
                     <input type="hidden" name="action" value="edit_user"/>
                     <input type="hidden" name="username" value="{{ user.username | escape('html_attr') }}"/>
                 </form>
-                <form method="?">
+                <form method="POST" action="?" >
                     <input type="submit" value="Delete"/>
                     <input type="hidden" name="action" value="delete_user"/>
                     <input type="hidden" name="username" value="{{ user.username | escape('html_attr') }}"/>

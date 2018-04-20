@@ -27,11 +27,12 @@ class UserAdmin
     private function mkpass($passwd)
     {
         if ($this->settings["pwcrypt"] == "password") {
-            $ret = "password('" . $passwd . "')";
+            $salt = uniqid(); /* not all that good */
+            $ret = crypt($passwd, $salt);
         } elseif ($this->settings["pwcrypt"] == "cleartext") {
-            $ret = "'" . $passwd . "'";
+            $ret = $passwd;
         } elseif ($this->settings["pwcrypt"] == "md5") {
-            $ret = "'" . md5($passwd) . "'";
+            $ret = md5($passwd);
         } else {
             //error
             error("update user-password", "Please provide a valid password encryption method in the configuration section");
@@ -195,6 +196,8 @@ SQL;
 
         $row = $this->database->selectOne($sql, ['username' => $username]);
 
+        var_dump($row);
+        die('x');
         return $this->remapFromDb($row);
     }
 

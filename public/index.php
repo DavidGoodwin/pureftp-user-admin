@@ -36,10 +36,12 @@ if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($form->isValid($_POST)) {
 
+            error_log("Valid form");
             $values = $form->getValues();
             if ($model->saveUser($values)) {
+                error_log("saved user" . json_encode($values));
                 $flash->info("User saved");
-                if ($what == 'New User') {
+                if ($what == 'New User' && $settings['notify_user']) {
                     $flash->info("User emailed");
                     $with_password = $values;
                     $with_password['password'] = $_POST['password'];
@@ -64,7 +66,6 @@ if ($_REQUEST['action'] == 'delete_user' &&
     if ($model->deleteUser($_POST['username'])) {
         $flash->info('Deleted user');
     }
-
 }
 
 if ($_REQUEST['action'] == 'welcome') {
