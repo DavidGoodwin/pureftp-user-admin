@@ -17,6 +17,9 @@ class UserAdmin
      */
     protected $settings;
 
+    /**
+     * @var Database $database
+     */
     private $database;
 
     /**
@@ -184,7 +187,7 @@ SQL;
     public function deleteUser($username)
     {
         $sql = "DELETE FROM {$this->settings['sql_table']} WHERE {$this->settings['field_user']} = :username";
-        return $this->database->update($sql, ['username' => $username]);
+        return (bool) $this->database->update($sql, ['username' => $username]);
     }
 
     /**
@@ -288,7 +291,7 @@ SQL;
      * @param string $homedir The home directory of the user processed.
      * @param int $uid The main userid of the user.
      * @param int $gid The main groupid of the user.
-     * @return array owner,group,world octal permission and read and write flag.
+     * @return string read/write/none
      */
     public function check_access($homedir, $uid, $gid)
     {

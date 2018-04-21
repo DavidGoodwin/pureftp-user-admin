@@ -4,6 +4,9 @@ namespace PureFTPAdmin\Form;
 
 class User implements Form {
 
+    /**
+     * @param \Zend_Form $form
+     */
     protected $form;
 
     public function __construct(array $data = []) {
@@ -30,7 +33,7 @@ class User implements Form {
         $email = new \Zend_Form_Element_Text('email');
         $email->setRequired(false);
         $email->setLabel('Email address');
-        $email->addValidator(new \Zend_Validate_StringLength(1,100));
+        $email->addValidator(new \Zend_Validate_StringLength(1, 100));
         $email->addValidator(new \Zend_Validate_EmailAddress());
 
 
@@ -71,6 +74,9 @@ class User implements Form {
         $this->form->setElementFilters(array('StringTrim', 'StripTags'));
     }
 
+    /**
+     * @return string (html, presumably)
+     */
     public function render() {
 
         // see http://blog.kosev.net/2010/06/tutorial-create-zend-framework-form/
@@ -91,15 +97,25 @@ class User implements Form {
         return $this->form->render(new \Zend_View());
     }
 
+    /**
+     * @return array
+     */
     public function getValues() {
         return $this->form->getValues();
     }
 
+    /**
+     * @param array $data
+     * @return bool
+     */
     public function isValid(array $data) {
-
         return $this->form->isValid($data);
     }
 
+    /**
+     * @param array $list
+     * @return User
+     */
     public function setGidList(array $list) {
         /* @var \Zend_Form_Element_Select $select */
         $select = $this->form->getElement('uid');
@@ -107,6 +123,10 @@ class User implements Form {
         return $this;
     }
 
+    /**
+     * @param array $list
+     * @return User
+     */
     public function setUidList(array $list) {
         /* @var \Zend_Form_Element_Select $select */
         $select = $this->form->getElement('gid');

@@ -18,6 +18,7 @@ class Database
     /**
      * Run an update/insert/delete on the db; returns row count.
      * @param string $sql
+     * @param array $args for prepared statement placeholders
      * @return int
      */
     public function update($sql, $args = [])

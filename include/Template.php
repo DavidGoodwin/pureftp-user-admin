@@ -11,6 +11,9 @@ use PureUserFTP\Form\Form;
 class Template
 {
 
+    /**
+     * @var array
+     */
     private $variables = [];
 
     /**
