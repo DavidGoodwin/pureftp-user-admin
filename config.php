@@ -22,7 +22,7 @@ $config = [
     'field_pass' => 'password',
     'field_user' => 'username',
     'field_dir' => 'dir',
-    'field_email' => 'emali',
+    'field_email' => 'email',
     
 // How we encrypt user's passwords.
 // crypt vs md5 vs cleartext 
