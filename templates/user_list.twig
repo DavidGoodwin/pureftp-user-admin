@@ -28,7 +28,7 @@
             <td>{{ user.gid | e}}</td>
             <td>{{ user.rights | e }}</td>
             <td>
-                <form method="POST" action="?">
+                <form method="GET" action="?">
                     <input type="submit" value="Edit"/>
                     <input type="hidden" name="action" value="edit_user"/>
                     <input type="hidden" name="username" value="{{ user.username | escape('html_attr') }}"/>

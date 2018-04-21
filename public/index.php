@@ -35,7 +35,6 @@ if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($form->isValid($_POST)) {
-
             error_log("Valid form");
             $values = $form->getValues();
             if ($model->saveUser($values)) {
