@@ -7,4 +7,6 @@ ARG DEBIAN_FRONTEND="noninteractive"
 RUN apt-get -qq update && apt-get -qqy install pure-ftpd-mysql && \
     apt-get clean && rm -Rf /var/lib/apt/lists
 
+EXPOSE 21
+
 CMD [ "/usr/sbin/pure-ftpd", "-4", "-l mysql:/tmp/mysql.conf" ]
