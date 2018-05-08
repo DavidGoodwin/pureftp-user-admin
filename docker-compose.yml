@@ -1,0 +1,40 @@
+version: "3"
+services:
+    web:
+        image: davidgoodwin/jessie-php7-wordpress:latest
+        volumes:
+            - ./provisioning/apache-site.conf:/etc/apache2/sites-enabled/default.conf
+            - ./:/srv/pureftp-admin
+            - ./provisioning/config.local.php:/srv/pureftp-admin/config.local.php
+        ports:
+            - "08:80"
+        networks:            
+            - testnet
+        depends_on:
+            - mysql
+
+    ftp:
+        build:
+            context: ./
+            dockerfile: provisioning/Dockerfile_pureftp
+        ports:
+            - "21:21"
+        networks:            
+            - testnet
+        privileged: true
+
+    mysql:
+        image: mariadb:latest
+        ports:
+            - "3306:3306"
+        networks:            
+            - testnet
+        environment:
+            - MYSQL_ROOT_PASSWORD=test
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=password
+            - MYSQL_DATABASE=database
+        volumes:
+            - ./schema.sql:/docker-entrypoint-initdb.d/pureftp-schema.sql
+networks:
+    testnet:
