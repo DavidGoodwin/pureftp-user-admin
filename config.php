@@ -24,9 +24,10 @@ $config = [
     'field_dir' => 'dir',
     'field_email' => 'email',
     
-// How we encrypt user's passwords.
-// crypt vs md5 vs cleartext 
-    'pwcrypt'     => "md5",
+    // How we encrypt user's passwords.
+    // https://download.pureftpd.org/pub/pure-ftpd/doc/README.MySQL
+    // (good) crypt > sha1 > md5 > cleartext (not good)
+    'pwcrypt'     => "crypt",
     'default_uid' => "65534", // nobody
     'default_gid'  => "65534", // nogrop
     'page_size' => 40,
