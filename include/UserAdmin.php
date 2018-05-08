@@ -38,24 +38,28 @@ class UserAdmin
     }
 
     /**
-     * Generate a password statement for the database query.
-     * <code> $pass = self::mkpass("password"); </code>
+     * Hash a plaintext password.
      * @param string $passwd The password to insert into the database.
      * @return string The string to use in the sql statement.
-     * @access private
      */
     private function mkpass($passwd)
     {
-        if ($this->settings["pwcrypt"] == "password") {
+        $mode = $this->settings["pwcrypt"];
+
+        // https://download.pureftpd.org/pub/pure-ftpd/doc/README.MySQL
+        // md5, sha1 shouldn't really be used - use crypt if you have a choice.
+        if ($mode == "crypt") {
             $salt = uniqid(); /* not all that good */
             $ret = crypt($passwd, $salt);
-        } elseif ($this->settings["pwcrypt"] == "cleartext") {
+        } elseif ($mode == "cleartext") {
             $ret = $passwd;
-        } elseif ($this->settings["pwcrypt"] == "md5") {
+        } elseif ($mode == "md5") {
             $ret = md5($passwd);
+        } elseif ($mode == "sha1") {
+            $ret = sha1($passwd);
         } else {
             //error
-            throw new \Exception("Please provide a valid password encryption method in the configuration section");
+            throw new \Exception("Please provide a valid password encryption (pwcrypt) method in the configuration section (crypt, sha1, md5, cleartext)");
         }
         return $ret;
     }
