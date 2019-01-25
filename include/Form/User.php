@@ -20,20 +20,20 @@ class User implements Form {
         $username->setRequired(True);
         $username->setLabel('Username');
         $username->setDescription('FTP Username');
-        $username->addValidator(new \Zend_Validate_StringLength(1,30));
+        $username->addValidator(new \Zend_Validate_StringLength([1,30]));
 
 
         $dir = new \Zend_Form_Element_Text('dir');
         $dir->setRequired(True);
         $dir->setLabel('Home Directory');
         $dir->setDescription('Filesystem path');
-        $dir->addValidator(new \Zend_Validate_StringLength(1,100));
+        $dir->addValidator(new \Zend_Validate_StringLength([1,100]));
 
 
         $email = new \Zend_Form_Element_Text('email');
         $email->setRequired(false);
         $email->setLabel('Email address');
-        $email->addValidator(new \Zend_Validate_StringLength(1, 100));
+        $email->addValidator(new \Zend_Validate_StringLength([1, 100]));
         $email->addValidator(new \Zend_Validate_EmailAddress());
 
 
@@ -43,7 +43,7 @@ class User implements Form {
             $password->setRequired(true);
         }
         $password->setLabel('Password');
-        $password->addValidator(new \Zend_Validate_StringLength(1,100));
+        $password->addValidator(new \Zend_Validate_StringLength([1,100]));
 
 
         $uid_select = new \Zend_Form_Element_Select('uid');

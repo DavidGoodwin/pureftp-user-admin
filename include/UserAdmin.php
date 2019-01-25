@@ -94,7 +94,6 @@ class UserAdmin
 
     /**
      * Save a user in the database.
-     * <code> $result = $instance->save_user($userinfo); </code>
      * @param array $userinfo
      * @return boolean true when success, false on error.
      */
@@ -105,6 +104,9 @@ class UserAdmin
             //error, $userinfo is an array with fields from edit form
         }
 
+        if(!isset($userinfo['username'])) {
+            throw new \InvalidArgumentException("username required");
+        }
         $uid_field = $this->settings['field_uid'];
         $gid_field = $this->settings['field_gid'];
         $dir_field = $this->settings['field_dir'];
@@ -112,43 +114,38 @@ class UserAdmin
         $username_field = $this->settings['field_user'];
         $password_field = $this->settings['field_pass'];
 
-        $what = 'insert';
+        $args = [];
+        $existing = null;
+
         if (!empty($userinfo['username'])) {
             $existing = $this->getUserByUsername($userinfo['username']);
-            if (!empty($existing)) {
-                $what = 'update';
-            }
         }
-        $args = [];
 
+        $password_stuff ='';
+        if (!empty($userinfo["password"])) {
+                $password_stuff = ", {$password_field} = :password ";
+                $args['password'] = $this->mkpass($userinfo['password']);
+        }
 
-        if ($what == 'update') {
-            $password_stuff ='';
-            if (!empty($userinfo["password"])) {
-                    $password_stuff = ", {$password_field} = :password ";
-                    $args['password'] = $this->mkpass($userinfo['password']);
-
-            }
-
+        if(!empty($existing)) {
             $sql = <<<SQL
 UPDATE {$this->settings['sql_table']} SET 
-{$uid_field} = :uid,
-{$gid_field} = :gid,
-{$dir_field} = :dir,
-{$email_field} = :email
-$password_stuff
-WHERE 
-{$username_field} = :username
+    {$uid_field} = :uid,
+    {$gid_field} = :gid,
+    {$dir_field} = :dir,
+    {$email_field} = :email
+    $password_stuff WHERE {$username_field} = :username
 SQL;
         } else {
-
-
+            if(!isset($userinfo['password'])) {
+                throw new \InvalidArgumentException("password required");
+            }
+            // no existing record; insert
             $sql = <<<SQL
 INSERT INTO {$this->settings['sql_table']} ({$uid_field}, {$gid_field}, {$dir_field}, {$email_field}, {$username_field}, {$password_field} )
 VALUES (:uid, :gid, :dir, :email, :username, :password)
 SQL;
             $args['password'] = $this->mkpass($userinfo['password']);
-
         }
 
         $args['uid'] = $userinfo['uid'];
