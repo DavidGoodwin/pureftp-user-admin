@@ -31,7 +31,7 @@
     },
     "scripts": {
         "lint": "@php vendor/bin/parallel-lint --exclude vendor public include",
-        "psalm": "@php vendor/bin/psalm ",
+        "psalm": "@php vendor/bin/psalm --show-info=false",
         "phpunit": "@php vendor/bin/phpunit",
         "test": [
             "@lint",
