@@ -55,9 +55,7 @@ class Template
 
         $variables = $this->variables;
 
-        $body = $twig->load($body_template);
-        
-        $variables['body_template'] = $body;
+        $variables['body_template'] = $body_template;
 
         return $twig->render('master.twig', $variables);
     }
