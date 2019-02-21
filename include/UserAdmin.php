@@ -195,7 +195,7 @@ SQL;
      * Get a user from the database.
      * <code> $user = $instance->getUserByUsername($username); </code>
      * @param string $username
-     * @return array A user with all info that is in the database.
+     * @return array A user with all info that is in the database; empty if user does not exist.
      */
     public function getUserByUsername($username)
     {
@@ -203,6 +203,9 @@ SQL;
 
         $row = $this->database->selectOne($sql, ['username' => $username]);
 
+        if(empty($row) || !is_array($$row)) {
+            return [];
+        }
         return $this->remapFromDb($row);
     }
 
