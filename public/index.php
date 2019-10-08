@@ -93,7 +93,7 @@ if ($_REQUEST['action'] == 'welcome') {
 
 $start = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 
-$search = isset($_GET['q']) ? $_GET['q'] : 0;
+$search = isset($_GET['q']) ? $_GET['q'] : '';
 
 $list = $model->getAllUsers($search, $start, 50);
 
