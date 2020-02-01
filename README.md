@@ -1,5 +1,7 @@
 # PureUserAdmin v 0.4.0
 
+![PHP Composer](https://github.com/DavidGoodwin/pureftp-user-admin/workflows/PHP%20Composer/badge.svg)
+
 
 # TODO
 
