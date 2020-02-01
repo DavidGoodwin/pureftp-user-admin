@@ -1,0 +1,24 @@
+name: PHP Composer
+
+on: [push]
+
+env:
+    DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: composer validate 
+      run: composer validate
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Run static analysis
+      run: composer psalm
+
