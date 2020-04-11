@@ -45,7 +45,7 @@ class Database
      * Run a select query on the DB.
      * @param string $sql
      * @param array $args
-     * @return array - assoc array - single row from the database.
+     * @return array|false - assoc array - single row from the database.
      */
     public function selectOne($sql, $args)
     {

@@ -285,8 +285,10 @@ SQL;
         $search = "%$search%";
 
         $count = $this->database->selectOne($sql, ['search' => $search]);
-
-        return $count['count'];
+        if(is_array($count) && isset($count['count'])) {
+            return $count['count'];
+        }
+        return 0;
     }
 
 
