@@ -35,7 +35,7 @@ if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($form->isValid($_POST)) {
-            error_log("Valid form");
+            //error_log("Valid form");
             $values = $form->getValues();
             if ($model->saveUser($values)) {
                 error_log("saved user" . json_encode($values));
@@ -95,7 +95,7 @@ $start = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 
 $search = isset($_GET['q']) ? $_GET['q'] : '';
 
-$list = $model->getAllUsers($search, $start, 50);
+$list = $model->getAllUsers($search, $start, 500);
 
 if($settings['check_access']) {
     foreach($list as $k => $row) {
