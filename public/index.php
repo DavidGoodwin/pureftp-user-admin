@@ -23,15 +23,16 @@ if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
 
     if (isset($_REQUEST['username'])) {
         $what = 'Edit User';
-        $user = $model->getUserByUsername($_REQUEST['username']);
+	$user = $model->getUserByUsername($_REQUEST['username']);
     }
 
     $template = new \PureFTPAdmin\Template($what);
 
-    $form = new PureFTPAdmin\Form\User($user);
+    $form = new PureFTPAdmin\Form\User();
 
     $form->setGidList($model->getGidList());
     $form->setUidList($model->getUidList());
+    $form->isValid($user);
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($form->isValid($_POST)) {
