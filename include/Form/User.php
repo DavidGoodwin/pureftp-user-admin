@@ -32,7 +32,8 @@ class User implements Form {
 
         $email = new \Zend_Form_Element_Text('email');
         $email->setRequired(false);
-        $email->setLabel('Email address');
+	$email->setLabel('Email address');
+
         $email->addValidator(new \Zend_Validate_StringLength([1, 100]));
         $email->addValidator(new \Zend_Validate_EmailAddress());
 
@@ -67,8 +68,8 @@ class User implements Form {
 
         $this->form->addElement($submit);
 
-        if(!empty($data)) {
-            $this->form->populate($data);
+	if(!empty($data)) {
+            $this->form->isValid($data);
         }
 
         $this->form->setElementFilters(array('StringTrim', 'StripTags'));
