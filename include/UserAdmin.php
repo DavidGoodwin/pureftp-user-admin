@@ -203,7 +203,7 @@ SQL;
 
         $row = $this->database->selectOne($sql, ['username' => $username]);
 
-        if(empty($row) || !is_array($$row)) {
+        if(empty($row) || !is_array($row)) {
             return [];
         }
         return $this->remapFromDb($row);
