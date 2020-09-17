@@ -9,4 +9,4 @@ RUN apt-get -qq update && apt-get -qqy install pure-ftpd-mysql && \
 
 EXPOSE 21
 
-CMD [ "/usr/sbin/pure-ftpd", "-4", "-l mysql:/tmp/mysql.conf" ]
+CMD [ "/usr/sbin/pure-ftpd-mysql", "-4", "-l mysql:/tmp/mysql.conf" ]
