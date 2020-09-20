@@ -35,9 +35,10 @@
 
         <PropertyNotSetInConstructor errorLevel="info" />
 
-        <RedundantCondition errorLevel="info" />
+        <RedundantCondition errorLevel="info" /> 
         <RedundantConditionGivenDocblockType errorLevel="info" />
-        <RawObjectIteration errorLevel="info" />
+
+
         <DocblockTypeContradiction errorLevel="info" />
         <TypeDoesNotContainType errorLevel="info" />
 
