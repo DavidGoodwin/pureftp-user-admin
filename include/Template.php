@@ -19,7 +19,7 @@ class Template
     /**
      * @param string $page_title
      */
-    public function __construct($page_title = '')
+    public function __construct(string $page_title = '')
     {
         $this->variables['page_title'] = $page_title;
 
@@ -30,9 +30,9 @@ class Template
      * @param mixed $value
      * @return void
      */
-    public function assign($variable, $value)
+    public function assign(string $variable, $value): void
     {
-        if($value instanceof \PureFTPAdmin\Form\Form) {
+        if ($value instanceof \PureFTPAdmin\Form\Form) {
             $value = $value->render();
         }
 

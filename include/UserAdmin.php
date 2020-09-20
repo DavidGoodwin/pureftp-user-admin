@@ -42,7 +42,7 @@ class UserAdmin
      * @param string $passwd The password to insert into the database.
      * @return string The string to use in the sql statement.
      */
-    private function mkpass($passwd)
+    private function mkpass(string $passwd) : string
     {
         $mode = $this->settings["pwcrypt"];
 
@@ -70,7 +70,7 @@ class UserAdmin
      * <code> self::load_uids(); </code>
      * @return array uids as key and usernames as value.
      */
-    public function getUidList()
+    public function getUidList() : array
     {
         $uids = [
             $this->settings['default_uid'] => 'default'
@@ -83,7 +83,7 @@ class UserAdmin
      * <code> self::load_gids(); </code>
      * @return array gids as key and groupnames as value.
      */
-    public function getGidList()
+    public function getGidList() : array
     {
         $gids = [
             $this->settings['default_gid'] => 'default'
@@ -97,7 +97,7 @@ class UserAdmin
      * @param array $userinfo
      * @return boolean true when success, false on error.
      */
-    public function saveUser(array $userinfo)
+    public function saveUser(array $userinfo) : bool
     {
         if (!count($userinfo)) {
             return false;
@@ -163,7 +163,7 @@ SQL;
      * @return bool
      * @param array $userinfo 
      */
-    public function sendPostCreationEmail(array $userinfo)
+    public function sendPostCreationEmail(array $userinfo) : bool
     {
         if ($this->settings["notify_user"] && strlen($userinfo["email"])) {
             // send email
@@ -185,7 +185,7 @@ SQL;
      * @param string $username
      * @return boolean true when success, false on error.
      */
-    public function deleteUser($username)
+    public function deleteUser($username) : bool
     {
         $sql = "DELETE FROM {$this->settings['sql_table']} WHERE {$this->settings['field_user']} = :username";
         return (bool) $this->database->update($sql, ['username' => $username]);
@@ -197,7 +197,7 @@ SQL;
      * @param string $username
      * @return array A user with all info that is in the database; empty if user does not exist.
      */
-    public function getUserByUsername($username)
+    public function getUserByUsername(string $username) : array
     {
         $sql = "SELECT * FROM {$this->settings['sql_table']} WHERE {$this->settings['field_user']} = :username";
 
@@ -212,7 +212,7 @@ SQL;
     /**
      * @return array
      */
-    private function remapFromDb(array $row) {
+    private function remapFromDb(array $row) : array {
 
         if(empty($row)) {
             return [];
@@ -241,7 +241,7 @@ SQL;
      * @param integer $pagesize Number of users to show on a page.
      * @return array All users with all info that is in the database.
      */
-    public function getAllUsers($search = "", $start = 0, $pagesize = 0)
+    public function getAllUsers(string $search = "", int $start = 0, int $pagesize = 0) : array
     {
         if (!$pagesize) {
             $pagesize = $this->settings["page_size"];
@@ -273,7 +273,7 @@ SQL;
      * @param string $search Searchstring to limit results.
      * @return integer Number of users in the database.
      */
-    public function get_nr_users($search = "")
+    public function get_nr_users(string $search = "") : int
     {
         if ($search) {
             $q = " WHERE {$this->settings["field_user"]} LIKE :search OR {$this->settings["field_dir"]} LIKE :search";
@@ -299,7 +299,7 @@ SQL;
      * @param int $gid The main groupid of the user.
      * @return string read/write/none
      */
-    public function check_access($homedir, $uid, $gid)
+    public function check_access(string $homedir, int $uid, int $gid) : string
     {
         $rights = ['error' => false, 'write' => false, 'read' => false];
 

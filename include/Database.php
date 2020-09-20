@@ -21,7 +21,7 @@ class Database
      * @param array $args for prepared statement placeholders
      * @return int
      */
-    public function update($sql, $args = [])
+    public function update(string $sql, array $args = []): int
     {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($args);
@@ -34,7 +34,7 @@ class Database
      * @param array $args
      * @return array - assoc array of results
      */
-    public function select($sql, $args)
+    public function select(string $sql, array $args): array
     {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($args);
@@ -47,7 +47,7 @@ class Database
      * @param array $args
      * @return array|false - assoc array - single row from the database.
      */
-    public function selectOne($sql, $args)
+    public function selectOne(string $sql, array $args)
     {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($args);
@@ -59,7 +59,7 @@ class Database
      * Get the last autoincrement value.
      * @return string
      */
-    public function getLastInsertId()
+    public function getLastInsertId(): string
     {
         return $this->pdo->lastInsertId();
     }

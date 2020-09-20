@@ -18,26 +18,16 @@ class Flash
         $this->messages = ['info' => [], 'error' => [] ];
     }
 
-    /**
-     * @param string $message
-     * @return void
-     */
-    public function info($message) {
+
+    public function info(string $message) : void {
         $this->messages['info'][] = $message;
     }
 
-    /**
-     * @param string $message
-     * @return void
-     */
-    public function error($message) {
+    public function error(string $message) : void {
         $this->messages['error'][] = $message;
     }
 
-    /**
-     * @return array
-     */
-    public function getMessages() {
+    public function getMessages() : array {
         return $this->messages;
     }
 }

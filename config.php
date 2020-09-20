@@ -33,9 +33,11 @@ $config = [
     'page_size' => 40,
 ];
 
-if(file_exists(dirname(__FILE__) . '/config.local.php')) {
+$optional = dirname(__FILE__) . '/config.local.php';
+
+if(file_exists($optional)) {
     // put your local config changes in this file to overwrite $config['things']
-    require_once(dirname(__FILE__) . '/config.local.php');
+    require_once($optional);
 }
 
 return $config;
