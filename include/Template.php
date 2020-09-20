@@ -46,12 +46,13 @@ class Template
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function display($body_template)
+    public function display(string $body_template): string
     {
 
-        $loader = new \Twig_Loader_Filesystem(dirname(__FILE__) . '/../templates');
+        $loader = new \Twig\Loader\FilesystemLoader(dirname(__FILE__) . '/../templates');
 
-        $twig = new \Twig_Environment($loader);
+        $twig = new \Twig\Environment($loader);
+
 
         $variables = $this->variables;
 

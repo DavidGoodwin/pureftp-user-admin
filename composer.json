@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "twig/twig": "^1.0",
+        "twig/twig": "^2.0",
         "shardj/zf1-future" : "^1.14.0"
     },
     "autoload": {
