@@ -23,7 +23,7 @@ if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
 
     if (isset($_REQUEST['username'])) {
         $what = 'Edit User';
-	$user = $model->getUserByUsername($_REQUEST['username']);
+        $user = $model->getUserByUsername($_REQUEST['username']);
     }
 
     $template = new \PureFTPAdmin\Template($what);
@@ -39,7 +39,7 @@ if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
             //error_log("Valid form");
             $values = $form->getValues();
             if ($model->saveUser($values)) {
-                error_log("saved user" . json_encode($values));
+                //error_log("saved user" . json_encode($values));
                 $flash->info("User saved");
                 if ($what == 'New User' && $settings['notify_user']) {
                     $flash->info("User emailed");
@@ -98,8 +98,8 @@ $search = isset($_GET['q']) ? $_GET['q'] : '';
 
 $list = $model->getAllUsers($search, $start, 500);
 
-if($settings['check_access']) {
-    foreach($list as $k => $row) {
+if ($settings['check_access']) {
+    foreach ($list as $k => $row) {
         $list[$k]['rights'] = $model->check_access($row['dir'], $row['uid'], $row['gid']);
     }
 }
