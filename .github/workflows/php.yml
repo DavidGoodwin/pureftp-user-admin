@@ -2,26 +2,29 @@ name: PHP Composer
 
 on: [push]
 
-env:
-    DEBIAN_FRONTEND: noninteractive
-
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
-    - name: composer validate 
+    - name: setup PHP?
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        extensions: composer:v2
+        coverage: none
+      env:
+        update: true
+
+    - name: Validate composer.json and composer.lock
       run: composer validate
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: touch config.local.php
-      run: touch config.local.php
-
-    - name: Run static analysis
+    - name: Run test suite
       run: composer psalm
-
+      
