@@ -13,6 +13,7 @@
  * Refactor codebase
  * Try and remove XSS, and SQL Injection issues 
  * Try and support multiple databases (via PDO)
+ * Support better password hash variants
  
 
 # Installation 
