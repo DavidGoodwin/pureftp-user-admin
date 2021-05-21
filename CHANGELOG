@@ -1,11 +1,11 @@
 PureUserAdmin: ChangeLog
 
-[0.4.*] Underway.
+[0.4.0] 2021/05/21
 
 * Support PHP 7.x
 * Move to use PDO / prepared statements etc
 * add psalm static analysis
-* support sha1/crypt/md5 password hashing
+* support argon2i/sha1/crypt/md5 password hashing
 
 [0.2.1] <mvanbaak (AT) users (DOT) sourceforge (DOT) net>
 * added search and paging in userlist again
