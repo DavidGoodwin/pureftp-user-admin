@@ -57,6 +57,8 @@ class UserAdmin
             $ret = md5($passwd);
         } elseif ($mode == "sha1") {
             $ret = sha1($passwd);
+        } elseif ($mode == "argon2i") {
+            $ret = password_hash($passwd, PASSWORD_ARGON2I);
         } else {
             //error
             throw new \Exception("Please provide a valid password encryption (pwcrypt) method in the configuration section (crypt, sha1, md5, cleartext)");
