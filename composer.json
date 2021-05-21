@@ -5,7 +5,7 @@
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.0",
         "phpunit/phpunit": "^7.0",
-        "vimeo/psalm": "^3.0"
+        "vimeo/psalm": "*"
     },
     "license": "GPL v2.0",
     "authors": [
