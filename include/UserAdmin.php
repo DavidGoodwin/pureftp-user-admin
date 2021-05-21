@@ -246,8 +246,6 @@ SQL;
         if (!$pagesize) {
             $pagesize = $this->settings["page_size"];
         }
-        $start = (int)$start;
-        $pagesize = (int)$pagesize;
 
         if ($search) {
             $q = " WHERE {$this->settings["field_user"]} LIKE :search OR {$this->settings["field_dir"]} LIKE :search";
