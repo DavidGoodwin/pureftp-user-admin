@@ -3,6 +3,7 @@
  * Settings file for PureUserAdmin
  */
 
+
 $config = [
     'version' => '0.4.0',
     'homepage' => "https://github.com/DavidGoodwin/pureftp-user-admin",
@@ -13,9 +14,9 @@ $config = [
 
 // database settigs 
 // We require a PDO DSN.
-    'database_dsn' => "mysql:host=localhost;dbname=pureftp",
-    'database_user' => 'db_username',
-    'database_pass' => 'db_password', 
+    'database_dsn'  => getenv('DATABASE_DSN') ?: "mysql:host=localhost;dbname=pureftp",
+    'database_user' => getenv('DATABASE_USER') ?: 'db_username',
+    'database_pass' => getenv('DATABASE_PASS') ?: 'db_password', 
     'sql_table' => 'logins',
     'field_uid' => 'uid',
     'field_gid' => 'gid',
@@ -32,6 +33,7 @@ $config = [
     'default_gid'  => "65534", // nogrop
     'page_size' => 40,
 ];
+
 
 $optional = dirname(__FILE__) . '/config.local.php';
 

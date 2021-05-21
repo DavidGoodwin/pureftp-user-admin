@@ -1,4 +1,7 @@
-CREATE TABLE `logins` (
+CREATE DATABASE IF NOT EXISTS pureftp;
+USE pureftp;
+
+CREATE TABLE IF NOT EXISTS `logins` (
 	`username` VARCHAR( 255 ) NOT NULL ,
 	`uid` INT NOT NULL ,
 	`gid` INT NOT NULL ,

@@ -1,17 +1,20 @@
 version: "3"
 services:
     web:
-        image: davidgoodwin/jessie-php7-wordpress:latest
+        image: davidgoodwin/debian-buster-php74:latest
         volumes:
-            - ./provisioning/apache-site.conf:/etc/apache2/sites-enabled/default.conf
+            - ./provisioning/apache-site.conf:/etc/apache2/sites-enabled/000-default.conf
             - ./:/srv/pureftp-admin
-            - ./provisioning/config.local.php:/srv/pureftp-admin/config.local.php
         ports:
             - "08:80"
         networks:            
             - testnet
         depends_on:
             - mysql
+        environment:
+            - DATABASE_DSN=mysql:host=mysql;dbname=pureftp
+            - DATABASE_USER=username
+            - DATABASE_PASS=password
 
     ftp:
         build:
@@ -30,10 +33,11 @@ services:
         networks:            
             - testnet
         environment:
-            - MYSQL_ROOT_PASSWORD=test
-            - MYSQL_USER=user
-            - MYSQL_PASSWORD=password
-            - MYSQL_DATABASE=database
+           MYSQL_INITDB_SKIP_TZINFO: non-empty
+           MYSQL_ROOT_PASSWORD: test
+           MYSQL_USER: username
+           MYSQL_PASSWORD: password
+           MYSQL_DATABASE: pureftp
         volumes:
             - ./schema.sql:/docker-entrypoint-initdb.d/pureftp-schema.sql
 networks:
