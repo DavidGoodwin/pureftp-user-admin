@@ -242,8 +242,8 @@ SQL;
      * Get all users from the database, in alphabetic order.
      * <code> $userlist = $instance->getAllUsers(); </code>
      * @param string $search Searchstring to limit results.
-     * @param integer $start Record in database to start output.
-     * @param integer $pagesize Number of users to show on a page.
+     * @param int $start Record in database to start output.
+     * @param int $pagesize Number of users to show on a page.
      * @return array All users with all info that is in the database.
      */
     public function getAllUsers(string $search = "", int $start = 0, int $pagesize = 0) : array
