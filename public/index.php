@@ -20,15 +20,19 @@ if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
 
     $what = 'New User';
     $user = [];
+    $is_new = true;
 
     if (isset($_REQUEST['username'])) {
         $what = 'Edit User';
         $user = $model->getUserByUsername($_REQUEST['username']);
+        if(!empty($user)) {
+            $is_new = false;
+        }
     }
 
     $template = new \PureFTPAdmin\Template($what);
 
-    $form = new PureFTPAdmin\Form\User();
+    $form = new PureFTPAdmin\Form\User([], $is_new);
 
     $form->setGidList($model->getGidList());
     $form->setUidList($model->getUidList());

@@ -9,7 +9,7 @@ class User implements Form {
      */
     protected $form;
 
-    public function __construct(array $data = []) {
+    public function __construct(array $data = [], $is_new = false) {
 
         $this->form = new \Zend_Form();
 
@@ -32,19 +32,19 @@ class User implements Form {
 
         $email = new \Zend_Form_Element_Text('email');
         $email->setRequired(false);
-	$email->setLabel('Email address');
+        $email->setLabel('Email address');
 
         $email->addValidator(new \Zend_Validate_StringLength([1, 100]));
         $email->addValidator(new \Zend_Validate_EmailAddress());
 
 
-
         $password = new \Zend_Form_Element_Text('password');
-        if(empty($data)) {
+        $password->setRequired(false);
+        if($is_new) {
             $password->setRequired(true);
         }
+        $password->addValidator(new \Zend_Validate_StringLength([0,100]));
         $password->setLabel('Password');
-        $password->addValidator(new \Zend_Validate_StringLength([1,100]));
 
 
         $uid_select = new \Zend_Form_Element_Select('uid');
@@ -68,7 +68,7 @@ class User implements Form {
 
         $this->form->addElement($submit);
 
-	if(!empty($data)) {
+        if(!empty($data)) {
             $this->form->isValid($data);
         }
 
