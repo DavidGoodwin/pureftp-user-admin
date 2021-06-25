@@ -58,6 +58,7 @@ class UserAdmin
         } elseif ($mode == "sha1") {
             $ret = sha1($passwd);
         } elseif ($mode == "argon2i") {
+
             /**
              * @psalm-suppress InvalidScalarArgument
              */

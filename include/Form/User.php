@@ -9,6 +9,10 @@ class User implements Form {
      */
     protected $form;
 
+    /**
+     * @param array $data
+     * @param bool $is_new
+     */
     public function __construct(array $data = [], $is_new = false) {
 
         $this->form = new \Zend_Form();
