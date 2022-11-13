@@ -100,7 +100,7 @@ class UserAdmin
 
     /**
      * Save a user in the database.
-     * @param array $userinfo
+     * @param array{username: string, password: string, uid: string, gid: string, email: string, username: string, dir: string} $userinfo
      * @return boolean true when success, false on error.
      */
     public function saveUser(array $userinfo) : bool

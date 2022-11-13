@@ -13,19 +13,25 @@ $database = new \PureFTPAdmin\Database($pdo);
 $model = new \PureFTPAdmin\UserAdmin($database, $settings);
 $flash = new \PureFTPAdmin\Flash();
 
-$_REQUEST['action'] = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'welcome';
+$action = isset($_REQUEST['action']) && is_string($_REQUEST['action']) ? $_REQUEST['action'] : 'welcome';
 
+$allowable_actions = ['welcome', 'delete_user', 'edit_user', 'new_user'];
 
-if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
+if (!in_array($action, $allowable_actions)) {
+    $action = 'welcome';
+}
+
+if (in_array($action, ['edit_user', 'new_user'])) {
 
     $what = 'New User';
     $user = [];
     $is_new = true;
 
-    if (isset($_REQUEST['username'])) {
+    $username = $_REQUEST['username'] ?? null;
+    if ($username !== null && is_string($username)) {
         $what = 'Edit User';
-        $user = $model->getUserByUsername($_REQUEST['username']);
-        if(!empty($user)) {
+        $user = $model->getUserByUsername($username);
+        if (!empty($user)) {
             $is_new = false;
         }
     }
@@ -38,7 +44,7 @@ if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
     $form->setUidList($model->getUidList());
     $form->isValid($user);
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($form->isValid($_POST)) {
             //error_log("Valid form");
             $values = $form->getValues();
@@ -63,16 +69,14 @@ if (in_array($_REQUEST['action'], ['edit_user', 'new_user'])) {
     exit(0);
 }
 
-if ($_REQUEST['action'] == 'delete_user' &&
-    $_SERVER['REQUEST_METHOD'] == 'POST' &&
-    isset($_POST['username'])) {
+if ($action == 'delete_user' && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['username']) && is_string($_POST['username'])) {
 
     if ($model->deleteUser($_POST['username'])) {
         $flash->info('Deleted user');
     }
 }
 
-if ($_REQUEST['action'] == 'welcome') {
+if ($action == 'welcome') {
     $template = new \PureFTPAdmin\Template('Welcome');
 
     foreach ($settings as $key => $value) {
@@ -96,9 +100,15 @@ if ($_REQUEST['action'] == 'welcome') {
 
 // fall through to a list-users.
 
-$start = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+$start = 0;
+if (isset($_GET['start']) && is_numeric($_GET['start'])) {
+    $start = (int)$_GET['start'];
+}
 
-$search = isset($_GET['q']) ? $_GET['q'] : '';
+$search = '';
+if (isset($_GET['q']) && is_string($_GET['q'])) {
+    $search = $_GET['q'];
+}
 
 $list = $model->getAllUsers($search, $start, 500);
 
