@@ -4,7 +4,7 @@
     "type": "project",
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.0",
-        "phpunit/phpunit": "^7.0",
+        "phpunit/phpunit": "^7.0 | ^8",
         "vimeo/psalm": "*"
     },
     "license": "GPL v2.0",
@@ -15,8 +15,8 @@
         }
     ],
     "require": {
-        "php" : "^7.2",
-        "twig/twig": "^2.0",
+        "php" : "^7.2 | ^8.0",
+        "twig/twig": "^3.0",
         "shardj/zf1-future" : "^1.14.0"
     },
     "autoload": {
