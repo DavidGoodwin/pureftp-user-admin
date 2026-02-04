@@ -55,7 +55,10 @@ if (in_array($action, ['edit_user', 'new_user'])) {
                     $flash->info("User emailed");
                     $with_password = $values;
                     $with_password['password'] = $_POST['password'];
-                    $model->sendPostCreationEmail($with_password);
+                    $success = $model->sendPostCreationEmail($with_password);
+                    if(!$success) {
+                        $flash->error("Email may not have been sent.");
+                    }
                 }
                 $form = new PureFTPAdmin\Form\User();
             }

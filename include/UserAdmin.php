@@ -306,7 +306,7 @@ SQL;
             $fuid = fileowner($homedir);
             $fgid = filegroup($homedir);
             $fperms = fileperms($homedir);
-            $fperm = substr(sprintf("%o", $fperms), 2);
+            $fperm = substr(sprintf("%o", (string) $fperms), 2);
             $rights["owner"] = substr($fperm, 0, 1);
             $rights["group"] = substr($fperm, 1, 1);
             $rights["world"] = substr($fperm, 2, 1);
