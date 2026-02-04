@@ -4,6 +4,22 @@
  */
 
 
+$db_dsn = getenv('DATABASE_DSN');
+$db_user = getenv('DATABASE_USER');
+$db_pass = getenv('DATABASE_PASS');
+
+if(!is_string($db_dsn) || empty($db_dsn)) {
+    $db_dsn = 'mysql:host=localhost;dbname=pureftp';
+}
+if(!is_string($db_user) || empty($db_user)) {
+    $db_user = null;
+}
+
+if(!is_string($db_pass) || empty($db_pass)) {
+    $db_pass = null;
+}
+
+
 $config = [
     'version' => '0.4.0',
     'homepage' => "https://github.com/DavidGoodwin/pureftp-user-admin",
@@ -14,9 +30,9 @@ $config = [
 
 // database settigs 
 // We require a PDO DSN.
-    'database_dsn'  => getenv('DATABASE_DSN') ?: "mysql:host=localhost;dbname=pureftp",
-    'database_user' => getenv('DATABASE_USER') ?: 'db_username',
-    'database_pass' => getenv('DATABASE_PASS') ?: 'db_password', 
+    'database_dsn'  => $db_dsn,
+    'database_user' => $db_user,
+    'database_pass' => $db_pass,
     'sql_table' => 'logins',
     'field_uid' => 'uid',
     'field_gid' => 'gid',
@@ -40,6 +56,11 @@ $optional = dirname(__FILE__) . '/config.local.php';
 if(file_exists($optional)) {
     // put your local config changes in this file to overwrite $config['things']
     require_once($optional);
+}
+
+if(empty($db_user) || empty($db_pass)) {
+    error_log(__FILE__ . " - please configure me! database settings missing.";
+    die(__FILE__ . " - not yet configured");
 }
 
 return $config;

@@ -121,14 +121,14 @@ class UserAdmin
         $password_field = $this->settings['field_pass'];
 
         $args = [];
-        $existing = null;
+        $existing = [];
 
         if (!empty($userinfo['username'])) {
             $existing = $this->getUserByUsername($userinfo['username']);
         }
 
         $password_stuff ='';
-        if (!empty($userinfo["password"])) {
+        if (isset($userinfo['password']) && is_string($userinfo['password']) && !empty($userinfo["password"])) {
                 $password_stuff = ", {$password_field} = :password ";
                 $args['password'] = $this->mkpass($userinfo['password']);
         }
@@ -164,11 +164,6 @@ SQL;
 
     }
 
-
-    /**
-     * @return bool
-     * @param array $userinfo 
-     */
     public function sendPostCreationEmail(array $userinfo) : bool
     {
         if ($this->settings["notify_user"] && strlen($userinfo["email"])) {
@@ -209,7 +204,7 @@ SQL;
 
         $row = $this->database->selectOne($sql, ['username' => $username]);
 
-        if(empty($row) || !is_array($row)) {
+        if(!is_array($row) || empty($row)) {
             return [];
         }
         return $this->remapFromDb($row);

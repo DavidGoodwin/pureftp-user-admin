@@ -43,5 +43,6 @@
 
         <ClassMustBeFinal errorLevel="info"/>
         <MissingOverrideAttribute errorLevel="info"/>
+        <PossiblyUnusedMethod errorLevel="info"/>
     </issueHandlers>
 </psalm>
