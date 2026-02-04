@@ -1,0 +1,13 @@
+FROM php:8.2-apache
+
+ARG http_proxy=""
+ARG https_proxy=""
+ARG DEBIAN_FRONTEND="noninteractive"
+
+RUN docker-php-ext-install pdo pdo_mysql
+RUN rm /etc/apache2/sites-enabled/* 
+
+COPY provisioning/apache-site.conf /etc/apache2/sites-enabled/default.conf
+
+
+EXPOSE 80

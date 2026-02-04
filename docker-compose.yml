@@ -1,10 +1,10 @@
-version: "3"
 services:
     web:
-        image: davidgoodwin/debian-buster-php74:latest
+        build:
+            context: ./
+            dockerfile: provisioning/Dockerfile_web
         volumes:
-            - ./provisioning/apache-site.conf:/etc/apache2/sites-enabled/000-default.conf
-            - ./:/srv/pureftp-admin
+            - ./:/var/www/html/
         ports:
             - "08:80"
         networks:            
@@ -20,16 +20,16 @@ services:
         build:
             context: ./
             dockerfile: provisioning/Dockerfile_pureftp
-        ports:
-            - "21:21"
+        expose:
+            - 21
         networks:            
             - testnet
         privileged: true
 
     mysql:
         image: mariadb:latest
-        ports:
-            - "3306:3306"
+        expose:
+            - 3306
         networks:            
             - testnet
         environment:
