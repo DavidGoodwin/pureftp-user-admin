@@ -31,10 +31,11 @@
     },
     "scripts": {
         "lint": "@php vendor/bin/parallel-lint --exclude vendor public include",
-        "psalm": "@php vendor/bin/psalm.phar --show-info=false",
+        "psalm": "@php vendor/bin/psalm.phar --show-info=false --no-cache ",
         "phpunit": "@php vendor/bin/phpunit",
         "test": [
             "@lint",
+            "@psalm",
             "@phpunit"
         ]
     }

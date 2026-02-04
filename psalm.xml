@@ -41,5 +41,7 @@
         <DocblockTypeContradiction errorLevel="info" />
         <TypeDoesNotContainType errorLevel="info" />
 
+        <ClassMustBeFinal errorLevel="info"/>
+        <MissingOverrideAttribute errorLevel="info"/>
     </issueHandlers>
 </psalm>

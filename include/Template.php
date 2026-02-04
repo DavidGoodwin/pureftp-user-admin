@@ -42,9 +42,6 @@ class Template
     /**
      * @param string $body_template - inner template.
      * @return string html hopefully.
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
      */
     public function display(string $body_template): string
     {
